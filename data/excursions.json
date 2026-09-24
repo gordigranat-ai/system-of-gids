@@ -1,0 +1,70 @@
+[
+  {
+    "id": 1,
+    "title": "Знакомство с городом",
+    "route_id": 1,
+    "kind": "обычная экскурсия",
+    "base_price": 1800.0,
+    "max_participants": 15,
+    "min_age": 0,
+    "languages": [
+      "русский",
+      "английский"
+    ],
+    "is_active": true
+  },
+  {
+    "id": 2,
+    "title": "Три музея за один день",
+    "route_id": 2,
+    "kind": "обычная экскурсия",
+    "base_price": 2400.0,
+    "max_participants": 12,
+    "min_age": 12,
+    "languages": [
+      "русский"
+    ],
+    "is_active": true
+  },
+  {
+    "id": 3,
+    "title": "Набережная и парки",
+    "route_id": 3,
+    "kind": "обычная экскурсия",
+    "base_price": 1500.0,
+    "max_participants": 20,
+    "min_age": 6,
+    "languages": [
+      "русский",
+      "английский"
+    ],
+    "is_active": true
+  },
+  {
+    "id": 4,
+    "title": "Вкус города",
+    "route_id": 4,
+    "kind": "обычная экскурсия",
+    "base_price": 3200.0,
+    "max_participants": 10,
+    "min_age": 18,
+    "languages": [
+      "русский"
+    ],
+    "is_active": true
+  },
+  {
+    "id": 5,
+    "title": "Детская прогулка по парку",
+    "route_id": 3,
+    "kind": "семейная экскурсия",
+    "base_price": 1200.0,
+    "max_participants": 25,
+    "min_age": 4,
+    "languages": [
+      "русский",
+      "английский"
+    ],
+    "is_active": true
+  }
+]

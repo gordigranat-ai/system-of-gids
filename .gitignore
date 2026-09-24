@@ -1,0 +1,27 @@
+# Виртуальное окружение
+.venv/
+venv/
+env/
+
+# Служебные файлы Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Файлы IDE
+.idea/
+.vscode/
+*.swp
+*.sublime-*
+
+# Каталог data/ хранится в репозитории, но журнал работы программы — нет
+data/operations.log
+
+# Временные файлы
+*.log
+*.tmp
+tests/tmp/

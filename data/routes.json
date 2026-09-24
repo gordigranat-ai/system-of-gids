@@ -1,0 +1,64 @@
+[
+  {
+    "id": 1,
+    "name": "Исторический центр",
+    "description": "Пешая прогулка по главным площадям и улицам исторического центра.",
+    "duration_hours": 2.5,
+    "distance_km": 3.5,
+    "difficulty": "лёгкий",
+    "required_languages": [
+      "русский",
+      "английский"
+    ],
+    "is_active": true
+  },
+  {
+    "id": 2,
+    "name": "Музейный квартал",
+    "description": "Посещение трёх музеев квартала с рассказом о коллекциях.",
+    "duration_hours": 3.0,
+    "distance_km": 1.8,
+    "difficulty": "лёгкий",
+    "required_languages": [
+      "русский"
+    ],
+    "is_active": true
+  },
+  {
+    "id": 3,
+    "name": "Парковый маршрут у реки",
+    "description": "Прогулка по набережной и парковой зоне со смотровыми площадками.",
+    "duration_hours": 4.0,
+    "distance_km": 8.4,
+    "difficulty": "средний",
+    "required_languages": [
+      "русский",
+      "английский"
+    ],
+    "is_active": true
+  },
+  {
+    "id": 4,
+    "name": "Гастрономический маршрут",
+    "description": "Знакомство с местной кухней: рынок, сыроварня, дегустация.",
+    "duration_hours": 3.5,
+    "distance_km": 2.6,
+    "difficulty": "лёгкий",
+    "required_languages": [
+      "русский"
+    ],
+    "is_active": true
+  },
+  {
+    "id": 5,
+    "name": "Горный маршрут выходного дня",
+    "description": "Подъём к панорамной точке, протяжённый маршрут с перепадом высот.",
+    "duration_hours": 7.0,
+    "distance_km": 15.2,
+    "difficulty": "сложный",
+    "required_languages": [
+      "русский"
+    ],
+    "is_active": false
+  }
+]

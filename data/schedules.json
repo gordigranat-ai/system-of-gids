@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "excursion_id": 1,
+    "guide_id": 1,
+    "date": "2026-03-10",
+    "start_time": "10:00",
+    "booked": 8,
+    "status": "запланирована",
+    "note": "Группа туристов из гостиницы «Центральная»"
+  },
+  {
+    "id": 2,
+    "excursion_id": 2,
+    "guide_id": 2,
+    "date": "2026-03-10",
+    "start_time": "12:00",
+    "booked": 12,
+    "status": "запланирована",
+    "note": "Школьная группа"
+  },
+  {
+    "id": 3,
+    "excursion_id": 3,
+    "guide_id": 3,
+    "date": "2026-03-11",
+    "start_time": "11:00",
+    "booked": 5,
+    "status": "запланирована",
+    "note": ""
+  },
+  {
+    "id": 4,
+    "excursion_id": 4,
+    "guide_id": 4,
+    "date": "2026-03-12",
+    "start_time": "18:00",
+    "booked": 6,
+    "status": "запланирована",
+    "note": "Дегустация для корпоративной группы"
+  },
+  {
+    "id": 5,
+    "excursion_id": 1,
+    "guide_id": 1,
+    "date": "2026-03-13",
+    "start_time": "10:00",
+    "booked": 15,
+    "status": "проведена",
+    "note": "Мест не осталось"
+  },
+  {
+    "id": 6,
+    "excursion_id": 5,
+    "guide_id": 3,
+    "date": "2026-03-14",
+    "start_time": "09:30",
+    "booked": 10,
+    "status": "запланирована",
+    "note": "Семейная группа"
+  },
+  {
+    "id": 7,
+    "excursion_id": 3,
+    "guide_id": 3,
+    "date": "2026-03-14",
+    "start_time": "13:00",
+    "booked": 0,
+    "status": "отменена",
+    "note": "Отменена из-за погоды"
+  },
+  {
+    "id": 8,
+    "excursion_id": 2,
+    "guide_id": 2,
+    "date": "2026-03-15",
+    "start_time": "12:30",
+    "booked": 4,
+    "status": "запланирована",
+    "note": ""
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "name": "Анна Смирнова",
+    "specialization": "городская экскурсия",
+    "languages": [
+      "русский",
+      "английский"
+    ],
+    "experience_years": 7,
+    "rating": 4.8,
+    "is_active": true
+  },
+  {
+    "id": 2,
+    "name": "Игорь Петров",
+    "specialization": "музейная экскурсия",
+    "languages": [
+      "русский",
+      "немецкий"
+    ],
+    "experience_years": 12,
+    "rating": 4.9,
+    "is_active": true
+  },
+  {
+    "id": 3,
+    "name": "Мария Ковалёва",
+    "specialization": "природная экскурсия",
+    "languages": [
+      "русский",
+      "английский",
+      "французский"
+    ],
+    "experience_years": 4,
+    "rating": 4.6,
+    "is_active": true
+  },
+  {
+    "id": 4,
+    "name": "Дмитрий Волков",
+    "specialization": "гастрономическая экскурсия",
+    "languages": [
+      "русский"
+    ],
+    "experience_years": 2,
+    "rating": 4.3,
+    "is_active": true
+  },
+  {
+    "id": 5,
+    "name": "Ольга Никитина",
+    "specialization": "детская экскурсия",
+    "languages": [
+      "русский",
+      "английский"
+    ],
+    "experience_years": 9,
+    "rating": 4.7,
+    "is_active": false
+  }
+]
