@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Гиды – экскурсионное бюро{% endblock %}
+
+{% block content %}
+    <h1>Гиды</h1>
+
+    <p class="text-muted">Всего гидов: {{ guides|length }}</p>
+
+    <ul class="list-group">
+        {% for guide in guides %}
+            {% include "guides/includes/guide_card.html" %}
+        {% empty %}
+            <li class="list-group-item">Гидов пока нет.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

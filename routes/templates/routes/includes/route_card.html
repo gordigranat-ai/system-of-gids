@@ -1,0 +1,29 @@
+{% comment %}
+Карточка маршрута в списке. Подключается через {% include %}
+из route_list.html.
+{% endcomment %}
+<article class="card route-card mb-3">
+    <div class="card-body">
+        <h2 class="h5 card-title">
+            <a href="{% url 'routes:detail' route.id %}">
+                {{ route.name|default:"Без названия" }}
+            </a>
+        </h2>
+
+        <p class="card-text">{{ route.description|default:"Описание не заполнено." }}</p>
+
+        <p class="card-text mb-1">
+            <span class="badge bg-light text-dark">{{ route.difficulty }}</span>
+            <span class="text-muted">
+                {{ route.duration_hours|floatformat:1 }} ч ·
+                {{ route.distance_km|floatformat:1 }} км
+            </span>
+        </p>
+
+        <p class="card-text">
+            <small class="text-muted">
+                языки: {{ route.required_languages|join:", " }}
+            </small>
+        </p>
+    </div>
+</article>

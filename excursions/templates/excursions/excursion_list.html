@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Экскурсии – экскурсионное бюро{% endblock %}
+
+{% block content %}
+    <h1>Экскурсии</h1>
+
+    <p class="text-muted">Всего экскурсий: {{ excursions|length }}</p>
+
+    {% for excursion in excursions %}
+        {% include "excursions/includes/excursion_card.html" %}
+    {% empty %}
+        <p>Экскурсий пока нет.</p>
+    {% endfor %}
+{% endblock %}

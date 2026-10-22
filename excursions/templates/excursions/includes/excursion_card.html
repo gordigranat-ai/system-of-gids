@@ -1,0 +1,25 @@
+{% comment %}
+Карточка экскурсии в списке. Подключается через {% include %}
+из excursion_list.html.
+{% endcomment %}
+<article class="card excursion-card mb-3">
+    <div class="card-body">
+        <h2 class="h5 card-title">
+            <a href="{% url 'excursions:detail' excursion.id %}">
+                {{ excursion.title|default:"Без названия" }}
+            </a>
+        </h2>
+
+        <p class="card-text">
+            <span class="badge bg-info text-dark">{{ excursion.kind }}</span>
+            <span class="text-muted">
+                {{ excursion.base_price|floatformat:0 }} ₽ ·
+                до {{ excursion.max_participants }} человек
+            </span>
+        </p>
+
+        <p class="card-text">
+            <small class="text-muted">маршрут: {{ excursion.route.name }}</small>
+        </p>
+    </div>
+</article>

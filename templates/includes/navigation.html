@@ -1,0 +1,11 @@
+{% comment %}
+Общая навигация сайта. Ссылки строятся по именам маршрутов, поэтому при
+изменении адреса править нужно только urls.py приложения.
+{% endcomment %}
+<nav class="nav nav-tabs container mt-3">
+    <a class="nav-link" href="{% url 'homepage:index' %}">Главная</a>
+    <a class="nav-link" href="{% url 'guides:list' %}">Гиды</a>
+    <a class="nav-link" href="{% url 'routes:list' %}">Маршруты</a>
+    <a class="nav-link" href="{% url 'excursions:list' %}">Экскурсии</a>
+    <a class="nav-link" href="{% url 'schedules:list' %}">Расписание</a>
+</nav>

@@ -118,6 +118,26 @@ def test_guide_status_badge(client, data):
     assert "badge" in html
 
 
+def test_pages_extend_base_template(client):
+    """Страницы наследуют базовый шаблон: один документ и общий подвал."""
+    html = client.get("/schedules/").content.decode()
+    assert html.count("<!DOCTYPE html>") == 1
+    assert 'id="current-year"' in html
+    assert "Экскурсионное бюро" in html
+
+
+def test_static_files_are_found():
+    """Статические файлы проекта находятся системой staticfiles."""
+    from django.contrib.staticfiles import finders
+
+    for name in (
+        "homepage/css/style.css",
+        "homepage/js/main.js",
+        "homepage/img/logo.png",
+    ):
+        assert finders.find(name) is not None, name
+
+
 def test_related_objects_are_linked(data):
     """Данные для страниц берутся из ПР3 без потери связей между объектами."""
     routes = load_routes()

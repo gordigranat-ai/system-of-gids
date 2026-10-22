@@ -55,7 +55,9 @@ ROOT_URLCONF = 'guideservice.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # Каталог шаблонов уровня проекта: base.html и общие включаемые части.
+        'DIRS': [BASE_DIR / "templates"],
+        # Шаблоны приложений ищутся в их собственных каталогах templates/.
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

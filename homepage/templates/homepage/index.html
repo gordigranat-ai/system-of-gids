@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Главная – экскурсионное бюро{% endblock %}
+
+{% block content %}
+    <h1 class="display-4">Сервис управления гидами</h1>
+
+    <p class="lead">
+        Экскурсионное бюро: гиды, маршруты, экскурсии и расписание.
+    </p>
+
+    <p>
+        Программа выросла из консольного приложения ПР1–ПР3. В веб-интерфейсе
+        пока доступен просмотр данных: списки объектов и карточки отдельных
+        записей. Добавление и редактирование появятся после изучения форм.
+    </p>
+
+    <p>Основные разделы:</p>
+
+    <a href="{% url 'guides:list' %}" class="btn btn-primary me-2">Гиды</a>
+    <a href="{% url 'routes:list' %}" class="btn btn-primary me-2">Маршруты</a>
+    <a href="{% url 'excursions:list' %}" class="btn btn-primary me-2">Экскурсии</a>
+    <a href="{% url 'schedules:list' %}" class="btn btn-secondary">Расписание</a>
+{% endblock %}

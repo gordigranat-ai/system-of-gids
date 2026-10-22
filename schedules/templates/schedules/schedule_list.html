@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Расписание – экскурсионное бюро{% endblock %}
+
+{% block content %}
+    <h1>Расписание</h1>
+
+    <p class="text-muted">Всего занятий: {{ schedules|length }}</p>
+
+    <ul class="list-group">
+        {% for schedule in schedules %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>
+                    <a href="{% url 'schedules:detail' schedule.id %}">
+                        {{ schedule.date }} в {{ schedule.start_time }}
+                    </a>
+                    – {{ schedule.excursion.title }}
+                    <small class="text-muted">гид: {{ schedule.guide.name }}</small>
+                </span>
+
+                <span class="text-muted">
+                    {{ schedule.booked }} из {{ schedule.excursion.max_participants }} мест
+                </span>
+
+                {% include "schedules/includes/schedule_status.html" %}
+            </li>
+        {% empty %}
+            <li class="list-group-item">Занятий пока нет.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

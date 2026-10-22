@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{{ route.name }} – маршрут{% endblock %}
+
+{% block content %}
+    <h1>{{ route.name }}</h1>
+
+    <div class="card route-card mb-3">
+        <div class="card-body">
+            <p class="card-text">{{ route.description|default:"Описание не заполнено." }}</p>
+            <p class="card-text">
+                <strong>Продолжительность:</strong>
+                {{ route.duration_hours|floatformat:1 }} ч
+            </p>
+            <p class="card-text">
+                <strong>Протяжённость:</strong>
+                {{ route.distance_km|floatformat:1 }} км
+            </p>
+            <p class="card-text">
+                <strong>Сложность:</strong> {{ route.difficulty }}
+            </p>
+            <p class="card-text">
+                <strong>Языки:</strong>
+                {{ route.required_languages|join:", "|default:"не указаны" }}
+            </p>
+        </div>
+    </div>
+
+    <h2 class="h4">Экскурсии на маршруте</h2>
+
+    <ul class="list-group">
+        {% for excursion in excursions %}
+            <li class="list-group-item">
+                <a href="{% url 'excursions:detail' excursion.id %}">
+                    {{ excursion.title }}
+                </a>
+                – {{ excursion.base_price|floatformat:0 }} ₽ за человека
+            </li>
+        {% empty %}
+            <li class="list-group-item">Экскурсий по этому маршруту нет.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'routes:list' %}" class="btn btn-outline-secondary mt-3">
+        ← к списку маршрутов
+    </a>
+{% endblock %}

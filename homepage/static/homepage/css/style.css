@@ -1,0 +1,44 @@
+/* Собственные стили проекта «Сервис управления гидами».
+   Bootstrap задаёт сетку и базовое оформление, а эти правила отвечают
+   за вид элементов именно этого проекта. */
+
+body {
+    min-height: 100vh;
+    background-color: #fbfbfd;
+}
+
+.site-logo {
+    width: 72px;
+    height: auto;
+    margin-bottom: 0.5rem;
+}
+
+.guide-card {
+    border-left: 4px solid #0d6efd;
+}
+
+.route-card,
+.excursion-card,
+.guide-detail,
+.schedule-card {
+    border: 1px solid #e2e2e8;
+    border-radius: 10px;
+}
+
+.route-card .card-title a,
+.excursion-card .card-title a {
+    text-decoration: none;
+}
+
+.status-badge {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.nav-tabs .nav-link {
+    color: #0d47a1;
+}
+
+main {
+    padding-top: 1.5rem;
+}

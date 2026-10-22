@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}{{ excursion.title }} – экскурсия{% endblock %}
+
+{% block content %}
+    <h1>{{ excursion.title }}</h1>
+
+    <div class="card excursion-card mb-3">
+        <div class="card-body">
+            <p class="card-text">
+                <strong>Вид:</strong>
+                <span class="badge bg-info text-dark">{{ excursion.kind }}</span>
+            </p>
+            <p class="card-text">
+                <strong>Маршрут:</strong>
+                <a href="{% url 'routes:detail' excursion.route.id %}">
+                    {{ excursion.route.name }}
+                </a>
+                ({{ excursion.duration_hours|floatformat:1 }} ч,
+                {{ excursion.route.difficulty }})
+            </p>
+            <p class="card-text">
+                <strong>Цена за человека:</strong>
+                {{ excursion.base_price|floatformat:0 }} ₽
+            </p>
+            <p class="card-text">
+                <strong>Максимум участников:</strong>
+                {{ excursion.max_participants }}
+            </p>
+            <p class="card-text">
+                <strong>Минимальный возраст:</strong> {{ excursion.min_age }}
+            </p>
+            <p class="card-text">
+                <strong>Языки:</strong>
+                {{ excursion.languages|join:", "|default:"не указаны" }}
+            </p>
+            <p class="card-text">
+                <strong>Стоимость для группы из 4 человек:</strong>
+                {{ group_price|floatformat:0 }} ₽
+            </p>
+        </div>
+    </div>
+
+    <a href="{% url 'excursions:list' %}" class="btn btn-outline-secondary">
+        ← к списку экскурсий
+    </a>
+{% endblock %}

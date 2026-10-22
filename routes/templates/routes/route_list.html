@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Маршруты – экскурсионное бюро{% endblock %}
+
+{% block content %}
+    <h1>Маршруты</h1>
+
+    <p class="text-muted">Всего маршрутов: {{ routes|length }}</p>
+
+    {% for route in routes %}
+        {% include "routes/includes/route_card.html" %}
+    {% empty %}
+        <p>Маршрутов пока нет.</p>
+    {% endfor %}
+{% endblock %}

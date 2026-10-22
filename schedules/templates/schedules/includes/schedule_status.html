@@ -1,0 +1,11 @@
+{% comment %}
+Статус занятия. Шаблон подключается через {% include %} и в списке,
+и в карточке занятия, чтобы оформление статуса не дублировалось.
+{% endcomment %}
+{% if schedule.status == "отменена" %}
+    <span class="badge bg-danger status-badge">отменена</span>
+{% elif schedule.status == "проведена" %}
+    <span class="badge bg-secondary status-badge">проведена</span>
+{% else %}
+    <span class="badge bg-success status-badge">запланирована</span>
+{% endif %}

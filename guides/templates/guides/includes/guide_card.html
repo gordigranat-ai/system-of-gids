@@ -1,0 +1,20 @@
+{% comment %}
+Одна строка списка гидов. Шаблон подключается через {% include %}
+из guide_list.html.
+{% endcomment %}
+<li class="list-group-item guide-card d-flex justify-content-between align-items-center">
+    <span>
+        <a href="{% url 'guides:detail' guide.id %}">
+            {{ guide.name|default:"Без имени" }}
+        </a>
+        <small class="text-muted">{{ guide.specialization }}</small>
+    </span>
+
+    <span class="text-muted">языки: {{ guide.languages|join:", " }}</span>
+
+    {% if guide.is_active %}
+        <span class="badge bg-success status-badge">работает</span>
+    {% else %}
+        <span class="badge bg-secondary status-badge">не работает</span>
+    {% endif %}
+</li>
