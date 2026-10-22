@@ -58,5 +58,16 @@
     "experience_years": 9,
     "rating": 4.7,
     "is_active": false
+  },
+  {
+    "id": 6,
+    "name": "Петр",
+    "specialization": "городская экскурсия",
+    "languages": [
+      "английский"
+    ],
+    "experience_years": 6,
+    "rating": 5.0,
+    "is_active": true
   }
 ]
