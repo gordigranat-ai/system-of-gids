@@ -12,13 +12,12 @@ from models import (
     SPECIALIZATIONS,
     Guide,
     GuideServiceError,
-    add_excursion,
     add_guide,
-    add_route,
-    add_schedule,
     book_seats,
     cancel_schedule,
     cancel_seats,
+    create_excursion,
+    create_route,
     create_schedule,
     filter_available_schedules,
     filter_excursions_by_price,
@@ -239,8 +238,8 @@ def add_excursion_dialog(excursions, routes):
     languages = input_required("  Языки через запятую: ")
     family = input_yes_no("  Семейная экскурсия (детям скидка)?")
 
-    excursion = add_excursion(excursions, title, route, price, participants,
-                              split_list(languages), min_age, family)
+    excursion = create_excursion(excursions, title, route, price, participants,
+                                 split_list(languages), min_age, family)
     print(f"\n  Экскурсия добавлена, id = {excursion.id}")
     print(f"  {excursion}")
 

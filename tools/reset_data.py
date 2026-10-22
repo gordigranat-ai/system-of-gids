@@ -13,8 +13,10 @@ from datetime import date
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from models import Excursion, FamilyExcursion, Guide, Route, Schedule
-from storage import save_all
+# Импорты проекта идут после правки sys.path: иначе модули models и storage
+# не найдутся при запуске скрипта из каталога tools.
+from models import Excursion, FamilyExcursion, Guide, Route, Schedule  # noqa: E402
+from storage import save_all  # noqa: E402
 
 
 def build_guides():
