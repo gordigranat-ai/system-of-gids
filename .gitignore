@@ -18,6 +18,10 @@ htmlcov/
 *.swp
 *.sublime-*
 
+# Служебная база самого Django: сессии и администратор.
+# Данные проекта лежат в JSON (ПР5, ПР6) и в data/guideservice.sqlite (ПР7).
+db.sqlite3
+
 # Каталог data/ хранится в репозитории, но журнал работы программы — нет
 data/operations.log
 
