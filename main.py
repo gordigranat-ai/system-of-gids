@@ -48,7 +48,7 @@ from models import (
     sort_guides,
     sort_routes,
 )
-from statistics import (
+from reports import (
     build_summary,
     count_schedules_by_guide,
     count_schedules_by_route,
