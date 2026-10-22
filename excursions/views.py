@@ -6,26 +6,20 @@
 
 from django.shortcuts import render
 
-from models import NotFoundError, get_excursion
-from storage import load_excursions, load_routes
+from db.repository import get_excursion, list_excursions
 
 
 def excursions(request):
     """Список экскурсий с ценой и числом мест."""
-    excursions_list = load_excursions(load_routes())
-
-    context = {"excursions": excursions_list}
+    context = {"excursions": list_excursions()}
     return render(request, "excursions/excursion_list.html", context)
 
 
 def excursion_detail(request, excursion_id):
     """Карточка экскурсии: маршрут, цена, вместимость и стоимость группы."""
-    routes_list = load_routes()
-    excursions_list = load_excursions(routes_list)
+    excursion = get_excursion(excursion_id)
 
-    try:
-        excursion = get_excursion(excursions_list, excursion_id)
-    except NotFoundError:
+    if excursion is None:
         context = {
             "message": "Экскурсия не найдена",
             "hint": "Экскурсии с таким идентификатором нет в справочнике.",

@@ -1,28 +1,45 @@
-"""Страницы гидов: список и карточка отдельного гида.
+"""Страницы гидов: список, поиск свободных гидов и карточка гида.
 
-HTML формируют шаблоны, а view-функции только готовят контекст: данные
-по-прежнему берутся средствами ПР3 (storage.py и классы из models.py).
+Данные берутся из базы SQLite через db.repository: там SQL-запросы
+и сборка объектов классов ПР3.
 """
 
 from django.shortcuts import render
 
-from models import NotFoundError, get_guide
-from storage import load_all, load_guides
+from db.repository import (
+    get_guide,
+    list_available_guides,
+    list_guides,
+    list_schedules_by_guide,
+)
 
 
 def guides(request):
     """Список гидов с языками и статусом работы."""
-    context = {"guides": load_guides()}
+    context = {"guides": list_guides()}
     return render(request, "guides/guide_list.html", context)
+
+
+def available_guides(request):
+    """Гиды, свободные на выбранную дату.
+
+    Дата приходит из формы методом GET: /guides/available/?date=2026-03-10.
+    Если дата не указана, запрос к базе не выполняется.
+    """
+    schedule_date = request.GET.get("date")
+    context = {"schedule_date": schedule_date, "guides": []}
+
+    if schedule_date:
+        context["guides"] = list_available_guides(schedule_date)
+
+    return render(request, "guides/available.html", context)
 
 
 def guide_detail(request, guide_id):
     """Карточка гида и его занятия в расписании."""
-    guides_list, _, _, schedules_list = load_all()
+    guide = get_guide(guide_id)
 
-    try:
-        guide = get_guide(guides_list, guide_id)
-    except NotFoundError:
+    if guide is None:
         context = {
             "message": "Гид не найден",
             "hint": "Гида с таким идентификатором нет в справочнике.",
@@ -32,7 +49,6 @@ def guide_detail(request, guide_id):
 
     context = {
         "guide": guide,
-        "schedules": [item for item in schedules_list
-                      if item.guide.id == guide.id],
+        "schedules": list_schedules_by_guide(guide_id),
     }
     return render(request, "guides/guide_detail.html", context)

@@ -7,6 +7,12 @@
 
     <p class="text-muted">Всего гидов: {{ guides|length }}</p>
 
+    <p>
+        <a href="{% url 'guides:available' %}" class="btn btn-outline-primary">
+            Найти гидов, свободных на дату
+        </a>
+    </p>
+
     <ul class="list-group">
         {% for guide in guides %}
             {% include "guides/includes/guide_card.html" %}

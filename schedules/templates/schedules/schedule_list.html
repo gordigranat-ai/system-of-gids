@@ -7,6 +7,15 @@
 
     <p class="text-muted">Всего занятий: {{ schedules|length }}</p>
 
+    <p>
+        <a href="{% url 'schedules:active' %}" class="btn btn-outline-primary">
+            Только активные занятия
+        </a>
+        <a href="{% url 'schedules:statistics' %}" class="btn btn-outline-secondary">
+            Статистика
+        </a>
+    </p>
+
     <ul class="list-group">
         {% for schedule in schedules %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
