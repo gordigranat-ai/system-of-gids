@@ -1,30 +1,31 @@
 @echo off
-rem Запуск веб-интерфейса проекта «Экскурсионное бюро».
-rem Использует интерпретатор из виртуального окружения .venv.
-chcp 65001 > nul
-set PYTHONUTF8=1
-set PYTHONIOENCODING=utf-8
+rem Guide service: start the Django development server and open it in a browser.
+setlocal
 cd /d "%~dp0"
 
-if not exist ".venv\Scripts\python.exe" goto no_venv
+if not exist ".venv\Scripts\python.exe" (
+    echo Virtual environment .venv was not found.
+    echo Create it and install dependencies:
+    echo     py -3.12 -m venv .venv
+    echo     .venv\Scripts\python.exe -m pip install -r requirements.txt
+    echo     .venv\Scripts\python.exe manage.py migrate
+    echo     .venv\Scripts\python.exe -m db.import_json
+    echo.
+    pause
+    exit /b 1
+)
 
-echo Запускаю сервер разработки Django...
-echo Откройте в браузере: http://127.0.0.1:8000/
-echo Остановить сервер: Ctrl+C
+echo Starting the Django development server in a separate window...
+start "guide_service - Django server" cmd /k ".venv\Scripts\python.exe manage.py runserver"
+
+echo Waiting for the server...
+timeout /t 5 /nobreak >nul
+
+echo Opening http://127.0.0.1:8000/
+start "" "http://127.0.0.1:8000/"
+
 echo.
-
-".venv\Scripts\python.exe" manage.py runserver
-pause
+echo If the page did not open, look at the server window for an error.
+echo Press Ctrl+C in the server window to stop the server.
+timeout /t 8 /nobreak >nul
 exit /b 0
-
-:no_venv
-echo Виртуальное окружение .venv не найдено.
-echo Создайте его и установите зависимости:
-echo.
-echo   py -3.12 -m venv .venv
-echo   .venv\Scripts\python.exe -m pip install -r requirements.txt
-echo   .venv\Scripts\python.exe manage.py migrate
-echo   .venv\Scripts\python.exe -m db.import_json
-echo.
-pause
-exit /b 1
