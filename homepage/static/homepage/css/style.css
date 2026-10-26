@@ -1,44 +1,754 @@
-/* Собственные стили проекта «Сервис управления гидами».
-   Bootstrap задаёт сетку и базовое оформление, а эти правила отвечают
-   за вид элементов именно этого проекта. */
+/* Оформление проекта «Экскурсионное бюро».
+   Bootstrap отвечает за сетку и базовые компоненты, здесь — вид самого
+   приложения: палитра, шапка, карточки, таблицы, статусы и адаптивность. */
+
+:root {
+    --brand: #2563eb;
+    --brand-dark: #1e3a8a;
+    --accent: #f59e0b;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --surface: #ffffff;
+    --bg: #f5f7fb;
+    --ok: #047857;
+    --ok-bg: #d1fae5;
+    --off: #475569;
+    --off-bg: #e2e8f0;
+    --danger: #b91c1c;
+    --danger-bg: #fee2e2;
+    --info-bg: #dbeafe;
+    --info: #1e40af;
+    --radius: 14px;
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+    --shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
 
 body {
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
-    background-color: #fbfbfd;
-}
-
-.site-logo {
-    width: 72px;
-    height: auto;
-    margin-bottom: 0.5rem;
-}
-
-.guide-card {
-    border-left: 4px solid #0d6efd;
-}
-
-.route-card,
-.excursion-card,
-.guide-detail,
-.schedule-card {
-    border: 1px solid #e2e2e8;
-    border-radius: 10px;
-}
-
-.route-card .card-title a,
-.excursion-card .card-title a {
-    text-decoration: none;
-}
-
-.status-badge {
-    font-weight: 600;
-    letter-spacing: 0.02em;
-}
-
-.nav-tabs .nav-link {
-    color: #0d47a1;
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
 main {
-    padding-top: 1.5rem;
+    flex: 1 0 auto;
+    padding-top: 2rem;
+    padding-bottom: 2.5rem;
+}
+
+a {
+    color: var(--brand);
+}
+
+:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+}
+
+/* --- шапка ------------------------------------------------------------ */
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+}
+
+.site-header__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.5rem;
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    color: inherit;
+    text-decoration: none;
+}
+
+.site-logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+}
+
+.brand__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.brand__name {
+    font-size: 1.02rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.brand__tag {
+    color: var(--muted);
+    font-size: 0.75rem;
+}
+
+.site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem;
+    margin-left: auto;
+}
+
+.site-nav a {
+    padding: 0.45rem 0.75rem;
+    border-radius: 10px;
+    color: #334155;
+    font-size: 0.94rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.site-nav a:hover {
+    background: #eef2ff;
+    color: var(--brand-dark);
+}
+
+.site-nav a.is-active {
+    background: var(--brand);
+    color: #fff;
+    box-shadow: var(--shadow-sm);
+}
+
+/* --- заголовок страницы ---------------------------------------------- */
+
+.page-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.page-head h1 {
+    margin: 0;
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.page-head__hint {
+    margin: 0.35rem 0 0;
+    color: var(--muted);
+    font-size: 0.94rem;
+}
+
+.section-title {
+    margin: 2rem 0 0.85rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+/* --- герой ------------------------------------------------------------ */
+
+.hero {
+    position: relative;
+    overflow: hidden;
+    padding: 2.4rem;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #2563eb, #1e3a8a 72%);
+    color: #fff;
+    box-shadow: var(--shadow);
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    right: -90px;
+    top: -110px;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.42), transparent 66%);
+    pointer-events: none;
+}
+
+.hero h1 {
+    margin: 0 0 0.6rem;
+    font-size: 2.1rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+}
+
+.hero__text {
+    max-width: 52ch;
+    margin: 0 0 1.5rem;
+    color: #dbeafe;
+    font-size: 1.02rem;
+}
+
+.hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+
+/* --- кнопки ----------------------------------------------------------- */
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.05rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font-size: 0.93rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.button--primary {
+    background: var(--brand);
+    color: #fff;
+}
+
+.button--primary:hover {
+    background: #1d4ed8;
+    color: #fff;
+}
+
+.button--light {
+    background: #fff;
+    color: var(--brand-dark);
+}
+
+.button--light:hover {
+    background: #eff6ff;
+}
+
+.button--ghost {
+    border-color: rgba(255, 255, 255, 0.45);
+    color: #fff;
+}
+
+.button--ghost:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.button--outline {
+    border-color: var(--line);
+    background: #fff;
+    color: #334155;
+}
+
+.button--outline:hover {
+    border-color: #c7d2fe;
+    color: var(--brand-dark);
+}
+
+/* --- плитки с числами ------------------------------------------------- */
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.9rem;
+    margin-top: 1.4rem;
+}
+
+.stat {
+    padding: 1rem 1.15rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.stat__value {
+    font-size: 1.65rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.stat__label {
+    margin-top: 0.35rem;
+    color: var(--muted);
+    font-size: 0.84rem;
+}
+
+/* --- сетка карточек --------------------------------------------------- */
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1.15rem 1.25rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    border-color: #c7d2fe;
+    box-shadow: var(--shadow);
+}
+
+.card__title {
+    margin: 0 0 0.5rem;
+    font-size: 1.08rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.card__title a {
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.card__title a:hover {
+    color: var(--brand);
+}
+
+.card__text {
+    margin: 0 0 0.8rem;
+    color: #475569;
+    font-size: 0.92rem;
+}
+
+.card__meta {
+    padding-top: 0.6rem;
+    margin: auto 0 0;
+    color: var(--muted);
+    font-size: 0.82rem;
+}
+
+.card__price {
+    margin-left: auto;
+    font-size: 1.15rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.card__foot {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.9rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+/* --- люди (гиды) ------------------------------------------------------ */
+
+.person {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 1.15rem;
+    margin-bottom: 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.person:hover {
+    border-color: #c7d2fe;
+    box-shadow: var(--shadow);
+}
+
+.avatar {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--info-bg);
+    color: var(--brand-dark);
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.avatar--lg {
+    width: 62px;
+    height: 62px;
+    font-size: 1.4rem;
+}
+
+.person__main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.person__name {
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.person__name:hover {
+    color: var(--brand);
+}
+
+.person__side {
+    flex: 0 0 auto;
+}
+
+/* --- метки и статусы -------------------------------------------------- */
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.4rem;
+}
+
+.chip {
+    padding: 0.15rem 0.55rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 0.76rem;
+}
+
+.chip--accent {
+    border-color: #fde68a;
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.32rem 0.68rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.badge--ok {
+    background: var(--ok-bg);
+    color: var(--ok);
+}
+
+.badge--off {
+    background: var(--off-bg);
+    color: var(--off);
+}
+
+.badge--danger {
+    background: var(--danger-bg);
+    color: var(--danger);
+}
+
+.badge--info {
+    background: var(--info-bg);
+    color: var(--info);
+}
+
+/* --- таблицы ---------------------------------------------------------- */
+
+.table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+}
+
+table.data {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+
+table.data th {
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--line);
+    background: #f8fafc;
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+table.data td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+table.data tbody tr:last-child td {
+    border-bottom: none;
+}
+
+table.data tbody tr:hover {
+    background: #f8fafc;
+}
+
+table.data a {
+    color: var(--ink);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+table.data a:hover {
+    color: var(--brand);
+}
+
+.cell-sub {
+    display: block;
+    color: var(--muted);
+    font-size: 0.8rem;
+}
+
+/* Числовые столбцы таблиц выравниваются по правому краю. */
+table.data .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.empty-cell {
+    padding: 1.4rem 1rem;
+    color: var(--muted);
+    text-align: center;
+}
+
+/* --- полоска загрузки ------------------------------------------------- */
+
+.load {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: 150px;
+}
+
+.load__bar {
+    flex: 1 1 auto;
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e2e8f0;
+}
+
+.load__fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #60a5fa, #1d4ed8);
+}
+
+.load__text {
+    color: var(--muted);
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+/* --- карточка объекта ------------------------------------------------- */
+
+.detail {
+    padding: 1.6rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.detail__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 1.2rem;
+    margin-bottom: 1.2rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.detail__head h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.facts {
+    display: grid;
+    gap: 0;
+    margin: 0;
+}
+
+.facts > div {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed var(--line);
+}
+
+.facts > div:last-child {
+    border-bottom: none;
+}
+
+.facts dt {
+    margin: 0;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.facts dd {
+    margin: 0;
+    font-weight: 600;
+    text-align: right;
+}
+
+/* --- форма поиска ----------------------------------------------------- */
+
+.search {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.15rem;
+    margin-bottom: 1.3rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+}
+
+.search label {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.search input[type="date"] {
+    padding: 0.5rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.93rem;
+}
+
+/* --- пустое состояние ------------------------------------------------- */
+
+.empty {
+    padding: 1.6rem;
+    border: 1px dashed #cbd5e1;
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--muted);
+    text-align: center;
+}
+
+/* --- страница 404 ----------------------------------------------------- */
+
+.not-found {
+    max-width: 520px;
+    padding: 2.4rem;
+    margin: 2rem auto;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.not-found__code {
+    display: block;
+    color: var(--brand);
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.not-found h1 {
+    margin: 0.6rem 0 0.5rem;
+    font-size: 1.4rem;
+}
+
+.not-found p {
+    margin-bottom: 1.4rem;
+    color: var(--muted);
+}
+
+/* --- подвал ----------------------------------------------------------- */
+
+.site-footer {
+    flex: 0 0 auto;
+    padding: 1.1rem 0;
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 0.84rem;
+}
+
+.site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+}
+
+/* --- адаптивность ----------------------------------------------------- */
+
+@media (max-width: 767px) {
+    .hero {
+        padding: 1.6rem;
+    }
+
+    .hero h1 {
+        font-size: 1.55rem;
+    }
+
+    .page-head h1 {
+        font-size: 1.4rem;
+    }
+
+    .site-nav {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .person {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
 }

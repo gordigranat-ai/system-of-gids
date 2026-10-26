@@ -1,12 +1,30 @@
 {% comment %}
-Общая навигация сайта. Ссылки строятся по именам маршрутов, поэтому при
-изменении адреса править нужно только urls.py приложения.
+Меню разделов. Текущий раздел подсвечивается по пространству имён маршрута,
+ссылки строятся тегом {% url %}.
 {% endcomment %}
-<nav class="nav nav-tabs container mt-3">
-    <a class="nav-link" href="{% url 'homepage:index' %}">Главная</a>
-    <a class="nav-link" href="{% url 'guides:list' %}">Гиды</a>
-    <a class="nav-link" href="{% url 'routes:list' %}">Маршруты</a>
-    <a class="nav-link" href="{% url 'excursions:list' %}">Экскурсии</a>
-    <a class="nav-link" href="{% url 'schedules:list' %}">Расписание</a>
-    <a class="nav-link" href="{% url 'schedules:statistics' %}">Статистика</a>
+<nav class="site-nav" aria-label="Разделы сайта">
+    <a
+        href="{% url 'homepage:index' %}"
+        class="{% if request.resolver_match.namespace == 'homepage' %}is-active{% endif %}"
+    >Главная</a>
+    <a
+        href="{% url 'guides:list' %}"
+        class="{% if request.resolver_match.namespace == 'guides' %}is-active{% endif %}"
+    >Гиды</a>
+    <a
+        href="{% url 'routes:list' %}"
+        class="{% if request.resolver_match.namespace == 'routes' %}is-active{% endif %}"
+    >Маршруты</a>
+    <a
+        href="{% url 'excursions:list' %}"
+        class="{% if request.resolver_match.namespace == 'excursions' %}is-active{% endif %}"
+    >Экскурсии</a>
+    <a
+        href="{% url 'schedules:list' %}"
+        class="{% if request.resolver_match.namespace == 'schedules' and request.resolver_match.url_name != 'statistics' %}is-active{% endif %}"
+    >Расписание</a>
+    <a
+        href="{% url 'schedules:statistics' %}"
+        class="{% if request.resolver_match.url_name == 'statistics' %}is-active{% endif %}"
+    >Статистика</a>
 </nav>

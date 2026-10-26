@@ -71,7 +71,7 @@ View-функции только готовят данные: в `guides/views.p
 
 ### 4.7. Статические файлы
 
-Собственные файлы лежат в `homepage/static/homepage/`: `css/style.css`, `js/main.js`, `img/logo.png`. В первой строке `base.html` стоит `{% load static %}`; CSS подключается как `{% static 'homepage/css/style.css' %}`, логотип — `{% static 'homepage/img/logo.png' %}`, скрипт — `{% static 'homepage/js/main.js' %}`. `main.js` подставляет текущий год в подвал (`<span id="current-year">`), поэтому год не записан в HTML. Bootstrap 5.3 остаётся подключённым по CDN, но собственные стили проекта обязательны: логотип, рамки карточек, полоса у карточки гида, цвет навигации.
+Собственные файлы лежат в `homepage/static/homepage/`: `css/style.css`, `js/main.js`, `img/logo.png`. В первой строке `base.html` стоит `{% load static %}`; CSS подключается как `{% static 'homepage/css/style.css' %}`, логотип — `{% static 'homepage/img/logo.png' %}`, скрипт — `{% static 'homepage/js/main.js' %}`. `main.js` подставляет текущий год в подвал (`<span id="current-year">`), поэтому год не записан в HTML. Bootstrap 5.3 остаётся подключённым по CDN: он отвечает за сетку и базовые компоненты, а собственные стили задают облик проекта — иконку в шапке, карточки со своей сеткой, полоску загрузки занятия, статусы и выделение текущего раздела меню.
 
 ### 4.8. Удаление функции page()
 

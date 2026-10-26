@@ -3,38 +3,21 @@
 {% block title %}Расписание – экскурсионное бюро{% endblock %}
 
 {% block content %}
-    <h1>Расписание</h1>
+    <div class="page-head">
+        <div>
+            <h1>Расписание</h1>
+            <p class="page-head__hint">Всего занятий: {{ schedules|length }}</p>
+        </div>
 
-    <p class="text-muted">Всего занятий: {{ schedules|length }}</p>
+        <div class="d-flex gap-2">
+            <a href="{% url 'schedules:active' %}" class="button button--outline">
+                Активные занятия
+            </a>
+            <a href="{% url 'schedules:statistics' %}" class="button button--outline">
+                Статистика
+            </a>
+        </div>
+    </div>
 
-    <p>
-        <a href="{% url 'schedules:active' %}" class="btn btn-outline-primary">
-            Только активные занятия
-        </a>
-        <a href="{% url 'schedules:statistics' %}" class="btn btn-outline-secondary">
-            Статистика
-        </a>
-    </p>
-
-    <ul class="list-group">
-        {% for schedule in schedules %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span>
-                    <a href="{% url 'schedules:detail' schedule.id %}">
-                        {{ schedule.date }} в {{ schedule.start_time }}
-                    </a>
-                    – {{ schedule.excursion.title }}
-                    <small class="text-muted">гид: {{ schedule.guide.name }}</small>
-                </span>
-
-                <span class="text-muted">
-                    {{ schedule.booked }} из {{ schedule.excursion.max_participants }} мест
-                </span>
-
-                {% include "schedules/includes/schedule_status.html" %}
-            </li>
-        {% empty %}
-            <li class="list-group-item">Занятий пока нет.</li>
-        {% endfor %}
-    </ul>
+    {% include "schedules/includes/schedule_table.html" %}
 {% endblock %}

@@ -3,21 +3,20 @@
 {% block title %}Гиды – экскурсионное бюро{% endblock %}
 
 {% block content %}
-    <h1>Гиды</h1>
+    <div class="page-head">
+        <div>
+            <h1>Гиды</h1>
+            <p class="page-head__hint">Всего в справочнике: {{ guides|length }}</p>
+        </div>
 
-    <p class="text-muted">Всего гидов: {{ guides|length }}</p>
-
-    <p>
-        <a href="{% url 'guides:available' %}" class="btn btn-outline-primary">
-            Найти гидов, свободных на дату
+        <a href="{% url 'guides:available' %}" class="button button--outline">
+            Свободные на дату
         </a>
-    </p>
+    </div>
 
-    <ul class="list-group">
-        {% for guide in guides %}
-            {% include "guides/includes/guide_card.html" %}
-        {% empty %}
-            <li class="list-group-item">Гидов пока нет.</li>
-        {% endfor %}
-    </ul>
+    {% for guide in guides %}
+        {% include "guides/includes/guide_card.html" %}
+    {% empty %}
+        <div class="empty">Гидов пока нет.</div>
+    {% endfor %}
 {% endblock %}

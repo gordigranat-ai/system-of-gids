@@ -12,23 +12,34 @@
     <link rel="stylesheet" href="{% static 'homepage/css/style.css' %}">
 </head>
 <body>
-    <header class="container pt-3">
-        <img
-            src="{% static 'homepage/img/logo.png' %}"
-            alt="Экскурсионное бюро"
-            class="site-logo"
-        >
-    </header>
+    <header class="site-header">
+        <div class="container site-header__inner">
+            <a class="brand" href="{% url 'homepage:index' %}">
+                <img
+                    src="{% static 'homepage/img/logo.png' %}"
+                    alt=""
+                    class="site-logo"
+                >
+                <span class="brand__text">
+                    <span class="brand__name">Экскурсионное бюро</span>
+                    <span class="brand__tag">гиды и расписание</span>
+                </span>
+            </a>
 
-    {% include "includes/navigation.html" %}
+            {% include "includes/navigation.html" %}
+        </div>
+    </header>
 
     <main class="container">
         {% block content %}
         {% endblock %}
     </main>
 
-    <footer class="container mt-4 mb-3 text-muted">
-        <p>© <span id="current-year"></span> Экскурсионное бюро</p>
+    <footer class="site-footer">
+        <div class="container site-footer__inner">
+            <span>© <span id="current-year"></span> Экскурсионное бюро</span>
+            <span>Гиды, маршруты, экскурсии и расписание</span>
+        </div>
     </footer>
 
     <script src="{% static 'homepage/js/main.js' %}"></script>

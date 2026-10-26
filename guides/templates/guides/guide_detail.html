@@ -1,53 +1,52 @@
 {% extends "base.html" %}
+{% load humanize %}
 
 {% block title %}{{ guide.name }} – гид{% endblock %}
 
 {% block content %}
-    <h1>{{ guide.name }}</h1>
-
-    <div class="card guide-detail mb-3">
-        <div class="card-body">
-            <p class="card-text">
-                <strong>Специализация:</strong>
-                {{ guide.specialization|default:"не указана" }}
-            </p>
-            <p class="card-text">
-                <strong>Языки:</strong>
-                {{ guide.languages|join:", "|default:"не указаны" }}
-            </p>
-            <p class="card-text">
-                <strong>Стаж:</strong> {{ guide.experience_years }} лет
-            </p>
-            <p class="card-text">
-                <strong>Рейтинг:</strong> {{ guide.rating|floatformat:1 }}
-            </p>
-            <p class="card-text">
-                Статус:
-                {% if guide.is_active %}
-                    <span class="badge bg-success status-badge">работает</span>
-                {% else %}
-                    <span class="badge bg-secondary status-badge">не работает</span>
-                {% endif %}
-            </p>
+    <section class="detail">
+        <div class="detail__head">
+            <span class="avatar avatar--lg" aria-hidden="true">{{ guide.name|slice:":1" }}</span>
+            <div>
+                <h1>{{ guide.name }}</h1>
+                <div class="chips">
+                    <span class="chip chip--accent">★ {{ guide.rating|floatformat:1 }}</span>
+                    {% if guide.is_active %}
+                        <span class="badge badge--ok status-badge">работает</span>
+                    {% else %}
+                        <span class="badge badge--off status-badge">не работает</span>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-    </div>
 
-    <h2 class="h4">Занятия гида</h2>
+        <dl class="facts">
+            <div>
+                <dt>Специализация</dt>
+                <dd>{{ guide.specialization|default:"не указана" }}</dd>
+            </div>
+            <div>
+                <dt>Языки</dt>
+                <dd>{{ guide.languages|join:", "|default:"не указаны" }}</dd>
+            </div>
+            <div>
+                <dt>Стаж</dt>
+                <dd>{{ guide.experience_years }} лет</dd>
+            </div>
+            <div>
+                <dt>Рейтинг</dt>
+                <dd>{{ guide.rating|floatformat:1 }}</dd>
+            </div>
+        </dl>
+    </section>
 
-    <ul class="list-group">
-        {% for schedule in schedules %}
-            <li class="list-group-item">
-                <a href="{% url 'schedules:detail' schedule.id %}">
-                    {{ schedule.date }} в {{ schedule.start_time }}
-                </a>
-                – {{ schedule.excursion.title }}
-            </li>
-        {% empty %}
-            <li class="list-group-item">Занятий пока нет.</li>
-        {% endfor %}
-    </ul>
+    <h2 class="section-title">Занятия гида</h2>
 
-    <a href="{% url 'guides:list' %}" class="btn btn-outline-secondary mt-3">
-        ← к списку гидов
-    </a>
+    {% include "schedules/includes/schedule_table.html" with schedules=schedules hide_guide=True %}
+
+    <p class="mt-4">
+        <a href="{% url 'guides:list' %}" class="button button--outline">
+            Все гиды
+        </a>
+    </p>
 {% endblock %}

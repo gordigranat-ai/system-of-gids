@@ -1,110 +1,96 @@
 {% extends "base.html" %}
+{% load humanize %}
 
 {% block title %}Статистика – экскурсионное бюро{% endblock %}
 
 {% block content %}
-    <h1>Статистика</h1>
-
-    <p class="text-muted">
-        Данные получены SQL-запросами к базе проекта.
-    </p>
+    <div class="page-head">
+        <div>
+            <h1>Статистика</h1>
+            <p class="page-head__hint">Занятия, выручка и заполняемость</p>
+        </div>
+    </div>
 
     {% if summary %}
-        <div class="row row-cols-2 row-cols-md-5 g-2 mb-4">
-            <div class="col">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <div class="fs-3">{{ summary.guides }}</div>
-                        <div class="text-muted">гидов</div>
-                    </div>
-                </div>
+        <section class="stat-grid">
+            <div class="stat">
+                <div class="stat__value">{{ summary.guides }}</div>
+                <div class="stat__label">гидов</div>
             </div>
-            <div class="col">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <div class="fs-3">{{ summary.routes }}</div>
-                        <div class="text-muted">маршрутов</div>
-                    </div>
-                </div>
+            <div class="stat">
+                <div class="stat__value">{{ summary.routes }}</div>
+                <div class="stat__label">маршрутов</div>
             </div>
-            <div class="col">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <div class="fs-3">{{ summary.excursions }}</div>
-                        <div class="text-muted">экскурсий</div>
-                    </div>
-                </div>
+            <div class="stat">
+                <div class="stat__value">{{ summary.excursions }}</div>
+                <div class="stat__label">экскурсий</div>
             </div>
-            <div class="col">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <div class="fs-3">{{ summary.schedules }}</div>
-                        <div class="text-muted">занятий</div>
-                    </div>
-                </div>
+            <div class="stat">
+                <div class="stat__value">{{ summary.schedules }}</div>
+                <div class="stat__label">занятий</div>
             </div>
-            <div class="col">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <div class="fs-3">{{ summary.active_schedules }}</div>
-                        <div class="text-muted">без отмен</div>
-                    </div>
-                </div>
+            <div class="stat">
+                <div class="stat__value">{{ summary.active_schedules }}</div>
+                <div class="stat__label">без отмен</div>
             </div>
-        </div>
+        </section>
     {% endif %}
 
-    <h2 class="h4">Занятия по гидам</h2>
+    <h2 class="section-title">Занятия по гидам</h2>
 
-    <table class="table table-striped align-middle">
-        <thead>
-            <tr>
-                <th scope="col">Гид</th>
-                <th scope="col">Занятий</th>
-                <th scope="col">Забронировано мест</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in by_guide %}
+    <div class="table-wrap">
+        <table class="data">
+            <thead>
                 <tr>
-                    <td>{{ item.guide_name }}</td>
-                    <td>{{ item.schedules_count }}</td>
-                    <td>{{ item.booked_total }}</td>
+                    <th scope="col">Гид</th>
+                    <th scope="col" class="num">Занятий</th>
+                    <th scope="col" class="num">Забронировано мест</th>
                 </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="3">Данных нет.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for item in by_guide %}
+                    <tr>
+                        <td>{{ item.guide_name }}</td>
+                        <td class="num">{{ item.schedules_count }}</td>
+                        <td class="num">{{ item.booked_total }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="3" class="empty-cell">Данных нет.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    <h2 class="h4 mt-4">Выручка и заполняемость экскурсий</h2>
+    <h2 class="section-title">Выручка и заполняемость экскурсий</h2>
 
-    <table class="table table-striped align-middle">
-        <thead>
-            <tr>
-                <th scope="col">Экскурсия</th>
-                <th scope="col">Занятий</th>
-                <th scope="col">Забронировано мест</th>
-                <th scope="col">Выручка, ₽</th>
-                <th scope="col">Заполняемость, %</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in by_excursion %}
+    <div class="table-wrap">
+        <table class="data">
+            <thead>
                 <tr>
-                    <td>{{ item.title }}</td>
-                    <td>{{ item.schedules_count }}</td>
-                    <td>{{ item.booked_total }}</td>
-                    <td>{{ item.revenue|floatformat:0 }}</td>
-                    <td>{{ item.load_percent|default:"—" }}</td>
+                    <th scope="col">Экскурсия</th>
+                    <th scope="col" class="num">Занятий</th>
+                    <th scope="col" class="num">Забронировано мест</th>
+                    <th scope="col" class="num">Выручка, ₽</th>
+                    <th scope="col" class="num">Заполняемость, %</th>
                 </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="5">Данных нет.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for item in by_excursion %}
+                    <tr>
+                        <td>{{ item.title }}</td>
+                        <td class="num">{{ item.schedules_count }}</td>
+                        <td class="num">{{ item.booked_total }}</td>
+                        <td class="num">{{ item.revenue|floatformat:0|intcomma }}</td>
+                        <td class="num">{{ item.load_percent|default:"—" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="empty-cell">Данных нет.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

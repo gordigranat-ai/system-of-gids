@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Фильтр intcomma: разделяет разряды в суммах (41 400 ₽).
+    'django.contrib.humanize',
     'homepage',
     'guides',
     'routes',

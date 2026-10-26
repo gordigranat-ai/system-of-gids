@@ -3,22 +3,85 @@
 {% block title %}Главная – экскурсионное бюро{% endblock %}
 
 {% block content %}
-    <h1 class="display-4">Сервис управления гидами</h1>
+    <section class="hero">
+        <h1>Сервис управления гидами</h1>
 
-    <p class="lead">
-        Экскурсионное бюро: гиды, маршруты, экскурсии и расписание.
-    </p>
+        <p class="hero__text">
+            Кто ведёт экскурсию, по какому маршруту она идёт и сколько мест
+            уже занято — всё в одном месте.
+        </p>
 
-    <p>
-        Программа выросла из консольного приложения ПР1–ПР3. В веб-интерфейсе
-        пока доступен просмотр данных: списки объектов и карточки отдельных
-        записей. Добавление и редактирование появятся после изучения форм.
-    </p>
+        <div class="hero__actions">
+            <a href="{% url 'schedules:list' %}" class="button button--light">
+                Смотреть расписание
+            </a>
+            <a href="{% url 'guides:available' %}" class="button button--ghost">
+                Найти свободного гида
+            </a>
+        </div>
+    </section>
 
-    <p>Основные разделы:</p>
+    {% if counters %}
+        <section class="stat-grid">
+            <div class="stat">
+                <div class="stat__value">{{ counters.guides }}</div>
+                <div class="stat__label">гидов</div>
+            </div>
+            <div class="stat">
+                <div class="stat__value">{{ counters.routes }}</div>
+                <div class="stat__label">маршрутов</div>
+            </div>
+            <div class="stat">
+                <div class="stat__value">{{ counters.excursions }}</div>
+                <div class="stat__label">экскурсий</div>
+            </div>
+            <div class="stat">
+                <div class="stat__value">{{ counters.schedules }}</div>
+                <div class="stat__label">занятий в расписании</div>
+            </div>
+        </section>
+    {% endif %}
 
-    <a href="{% url 'guides:list' %}" class="btn btn-primary me-2">Гиды</a>
-    <a href="{% url 'routes:list' %}" class="btn btn-primary me-2">Маршруты</a>
-    <a href="{% url 'excursions:list' %}" class="btn btn-primary me-2">Экскурсии</a>
-    <a href="{% url 'schedules:list' %}" class="btn btn-secondary">Расписание</a>
+    <h2 class="section-title">Разделы</h2>
+
+    <section class="card-grid">
+        <article class="card">
+            <h2 class="card__title">
+                <a href="{% url 'guides:list' %}">Гиды</a>
+            </h2>
+            <p class="card__text">
+                Специализация, языки, стаж и рейтинг. Занятия каждого гида
+                видно в его карточке.
+            </p>
+        </article>
+
+        <article class="card">
+            <h2 class="card__title">
+                <a href="{% url 'routes:list' %}">Маршруты</a>
+            </h2>
+            <p class="card__text">
+                Сложность, длительность и протяжённость. По маршруту собраны
+                экскурсии, которые по нему проходят.
+            </p>
+        </article>
+
+        <article class="card">
+            <h2 class="card__title">
+                <a href="{% url 'excursions:list' %}">Экскурсии</a>
+            </h2>
+            <p class="card__text">
+                Цена за человека, число мест и минимальный возраст участников.
+            </p>
+        </article>
+
+        <article class="card">
+            <h2 class="card__title">
+                <a href="{% url 'schedules:list' %}">Расписание</a>
+            </h2>
+            <p class="card__text">
+                Дата, время, гид и загрузка каждого занятия.
+                Здесь же — активные занятия и статистика.
+            </p>
+        </article>
+    </section>
 {% endblock %}

@@ -3,13 +3,18 @@
 {% block title %}Маршруты – экскурсионное бюро{% endblock %}
 
 {% block content %}
-    <h1>Маршруты</h1>
+    <div class="page-head">
+        <div>
+            <h1>Маршруты</h1>
+            <p class="page-head__hint">Всего маршрутов: {{ routes|length }}</p>
+        </div>
+    </div>
 
-    <p class="text-muted">Всего маршрутов: {{ routes|length }}</p>
-
-    {% for route in routes %}
-        {% include "routes/includes/route_card.html" %}
-    {% empty %}
-        <p>Маршрутов пока нет.</p>
-    {% endfor %}
+    <div class="card-grid">
+        {% for route in routes %}
+            {% include "routes/includes/route_card.html" %}
+        {% empty %}
+            <div class="empty">Маршрутов пока нет.</div>
+        {% endfor %}
+    </div>
 {% endblock %}

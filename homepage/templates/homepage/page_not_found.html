@@ -3,9 +3,12 @@
 {% block title %}404 – страница не найдена{% endblock %}
 
 {% block content %}
-    <h1 class="text-danger">404 – страница не найдена</h1>
-
-    <p>Проверьте адрес или вернитесь на главную страницу.</p>
-
-    <a href="{% url 'homepage:index' %}" class="btn btn-primary">На главную</a>
+    <section class="not-found">
+        <span class="not-found__code">404</span>
+        <h1>Такой страницы нет</h1>
+        <p>Возможно, адрес набран с ошибкой или страница переехала.</p>
+        <a href="{% url 'homepage:index' %}" class="button button--primary">
+            На главную
+        </a>
+    </section>
 {% endblock %}

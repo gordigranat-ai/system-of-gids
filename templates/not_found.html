@@ -3,11 +3,11 @@
 {% block title %}{{ message }}{% endblock %}
 
 {% block content %}
-    <h1 class="text-danger">{{ message }}</h1>
-
-    <p>{{ hint }}</p>
-
-    <a href="{% url list_url %}" class="btn btn-outline-secondary">
-        ← вернуться к списку
-    </a>
+    <section class="not-found">
+        <h1>{{ message }}</h1>
+        <p>{{ hint }}</p>
+        <a href="{% url list_url %}" class="button button--primary">
+            К списку
+        </a>
+    </section>
 {% endblock %}
