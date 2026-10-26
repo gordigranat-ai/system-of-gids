@@ -1,28 +1,26 @@
 {% comment %}
-Одна карточка гида в списке. Подключается через {% include %} из
-guide_list.html и available.html, чтобы оформление не дублировалось.
+Строка списка гидов. Подключается через {% include %} из guide_list.html
+и available.html, поэтому оформление не дублируется.
 {% endcomment %}
-<article class="person">
+<div class="item">
     <span class="avatar" aria-hidden="true">{{ guide.name|slice:":1" }}</span>
 
-    <div class="person__main">
-        <a class="person__name" href="{% url 'guides:detail' guide.id %}">
+    <div class="item__main">
+        <a class="item__name" href="{% url 'guides:detail' guide.id %}">
             {{ guide.name|default:"Без имени" }}
         </a>
 
-        <div class="chips">
-            <span class="chip">{{ guide.specialization }}</span>
-            <span class="chip">{{ guide.languages|join:", " }}</span>
-            <span class="chip">стаж {{ guide.experience_years }} лет</span>
-            <span class="chip chip--accent">★ {{ guide.rating|floatformat:1 }}</span>
-        </div>
+        <p class="meta">
+            {{ guide.specialization|default:"специализация не указана" }} ·
+            {{ guide.languages|join:", " }} ·
+            стаж {{ guide.experience_years }} лет ·
+            ★ {{ guide.rating|floatformat:1 }}
+        </p>
     </div>
 
-    <div class="person__side">
-        {% if guide.is_active %}
-            <span class="badge badge--ok status-badge">работает</span>
-        {% else %}
-            <span class="badge badge--off status-badge">не работает</span>
-        {% endif %}
-    </div>
-</article>
+    {% if guide.is_active %}
+        <span class="badge badge--ok status-badge">работает</span>
+    {% else %}
+        <span class="badge badge--off status-badge">не работает</span>
+    {% endif %}
+</div>

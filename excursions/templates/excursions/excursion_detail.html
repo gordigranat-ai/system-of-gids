@@ -4,17 +4,18 @@
 {% block title %}{{ excursion.title }} – экскурсия{% endblock %}
 
 {% block content %}
-    <section class="detail">
-        <div class="detail__head">
-            <div>
-                <h1>{{ excursion.title }}</h1>
-                <div class="chips">
-                    <span class="chip">{{ excursion.kind }}</span>
-                    <span class="chip">{{ excursion.duration_hours|floatformat:1 }} ч</span>
-                </div>
-            </div>
+    <div class="page-head">
+        <div>
+            <h1>{{ excursion.title }}</h1>
+            <p class="page-head__hint">
+                {{ excursion.kind }} ·
+                {{ excursion.duration_hours|floatformat:1 }} ч ·
+                {{ excursion.route.name }}
+            </p>
         </div>
+    </div>
 
+    <section class="detail">
         <dl class="facts">
             <div>
                 <dt>Маршрут</dt>

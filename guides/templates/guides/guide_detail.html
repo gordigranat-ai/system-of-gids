@@ -1,25 +1,25 @@
 {% extends "base.html" %}
-{% load humanize %}
 
 {% block title %}{{ guide.name }} – гид{% endblock %}
 
 {% block content %}
-    <section class="detail">
-        <div class="detail__head">
-            <span class="avatar avatar--lg" aria-hidden="true">{{ guide.name|slice:":1" }}</span>
-            <div>
-                <h1>{{ guide.name }}</h1>
-                <div class="chips">
-                    <span class="chip chip--accent">★ {{ guide.rating|floatformat:1 }}</span>
-                    {% if guide.is_active %}
-                        <span class="badge badge--ok status-badge">работает</span>
-                    {% else %}
-                        <span class="badge badge--off status-badge">не работает</span>
-                    {% endif %}
-                </div>
-            </div>
+    <div class="page-head">
+        <div>
+            <h1>{{ guide.name }}</h1>
+            <p class="page-head__hint">
+                {{ guide.specialization|default:"специализация не указана" }} ·
+                ★ {{ guide.rating|floatformat:1 }}
+            </p>
         </div>
 
+        {% if guide.is_active %}
+            <span class="badge badge--ok status-badge">работает</span>
+        {% else %}
+            <span class="badge badge--off status-badge">не работает</span>
+        {% endif %}
+    </div>
+
+    <section class="detail">
         <dl class="facts">
             <div>
                 <dt>Специализация</dt>

@@ -12,6 +12,10 @@
                 </p>
             {% endif %}
         </div>
+
+        <a href="{% url 'guides:list' %}" class="button button--outline">
+            Все гиды
+        </a>
     </div>
 
     <form method="get" class="search">
@@ -28,18 +32,12 @@
     </form>
 
     {% if schedule_date %}
-        {% if guides %}
+        <div class="list">
             {% for guide in guides %}
                 {% include "guides/includes/guide_card.html" %}
+            {% empty %}
+                <div class="empty">На эту дату все гиды заняты.</div>
             {% endfor %}
-        {% else %}
-            <div class="empty">На эту дату все гиды заняты.</div>
-        {% endif %}
+        </div>
     {% endif %}
-
-    <p class="mt-4">
-        <a href="{% url 'guides:list' %}" class="button button--outline">
-            Все гиды
-        </a>
-    </p>
 {% endblock %}

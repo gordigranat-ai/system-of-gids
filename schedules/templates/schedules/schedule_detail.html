@@ -4,26 +4,23 @@
 {% block title %}Занятие {{ schedule.date }} – расписание{% endblock %}
 
 {% block content %}
-    <section class="detail">
-        <div class="detail__head">
-            <div>
-                <h1>{{ schedule.excursion.title }}</h1>
-                <div class="chips">
-                    <span class="chip">{{ schedule.date }}</span>
-                    <span class="chip">{{ schedule.start_time }}</span>
-                    {% include "schedules/includes/schedule_status.html" %}
-                </div>
-            </div>
+    <div class="page-head">
+        <div>
+            <h1>{{ schedule.excursion.title }}</h1>
+            <p class="page-head__hint">
+                {{ schedule.date }} · {{ schedule.start_time }} ·
+                {{ schedule.guide.name }}
+            </p>
         </div>
 
+        {% include "schedules/includes/schedule_status.html" %}
+    </div>
+
+    <section class="detail">
         <dl class="facts">
             <div>
-                <dt>Дата</dt>
-                <dd>{{ schedule.date }}</dd>
-            </div>
-            <div>
-                <dt>Начало</dt>
-                <dd>{{ schedule.start_time }}</dd>
+                <dt>Дата и время</dt>
+                <dd>{{ schedule.date }}, {{ schedule.start_time }}</dd>
             </div>
             <div>
                 <dt>Гид</dt>

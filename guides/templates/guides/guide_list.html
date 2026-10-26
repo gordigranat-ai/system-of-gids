@@ -14,9 +14,11 @@
         </a>
     </div>
 
-    {% for guide in guides %}
-        {% include "guides/includes/guide_card.html" %}
-    {% empty %}
-        <div class="empty">Гидов пока нет.</div>
-    {% endfor %}
+    <div class="list">
+        {% for guide in guides %}
+            {% include "guides/includes/guide_card.html" %}
+        {% empty %}
+            <div class="empty">Гидов пока нет.</div>
+        {% endfor %}
+    </div>
 {% endblock %}

@@ -12,26 +12,22 @@
     </div>
 
     {% if summary %}
-        <section class="stat-grid">
-            <div class="stat">
+        <section class="stats">
+            <div>
                 <div class="stat__value">{{ summary.guides }}</div>
                 <div class="stat__label">гидов</div>
             </div>
-            <div class="stat">
+            <div>
                 <div class="stat__value">{{ summary.routes }}</div>
                 <div class="stat__label">маршрутов</div>
             </div>
-            <div class="stat">
+            <div>
                 <div class="stat__value">{{ summary.excursions }}</div>
                 <div class="stat__label">экскурсий</div>
             </div>
-            <div class="stat">
-                <div class="stat__value">{{ summary.schedules }}</div>
-                <div class="stat__label">занятий</div>
-            </div>
-            <div class="stat">
+            <div>
                 <div class="stat__value">{{ summary.active_schedules }}</div>
-                <div class="stat__label">без отмен</div>
+                <div class="stat__label">занятий без отмен</div>
             </div>
         </section>
     {% endif %}
@@ -71,7 +67,7 @@
                 <tr>
                     <th scope="col">Экскурсия</th>
                     <th scope="col" class="num">Занятий</th>
-                    <th scope="col" class="num">Забронировано мест</th>
+                    <th scope="col" class="num">Мест продано</th>
                     <th scope="col" class="num">Выручка, ₽</th>
                     <th scope="col" class="num">Заполняемость, %</th>
                 </tr>

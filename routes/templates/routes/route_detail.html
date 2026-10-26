@@ -4,19 +4,19 @@
 {% block title %}{{ route.name }} – маршрут{% endblock %}
 
 {% block content %}
-    <section class="detail">
-        <div class="detail__head">
-            <div>
-                <h1>{{ route.name }}</h1>
-                <div class="chips">
-                    <span class="chip chip--accent">{{ route.difficulty }}</span>
-                    <span class="chip">{{ route.duration_hours|floatformat:1 }} ч</span>
-                    <span class="chip">{{ route.distance_km|floatformat:1 }} км</span>
-                </div>
-            </div>
+    <div class="page-head">
+        <div>
+            <h1>{{ route.name }}</h1>
+            <p class="page-head__hint">
+                {{ route.difficulty }} ·
+                {{ route.duration_hours|floatformat:1 }} ч ·
+                {{ route.distance_km|floatformat:1 }} км
+            </p>
         </div>
+    </div>
 
-        <p>{{ route.description|default:"Описание не заполнено." }}</p>
+    <section class="detail">
+        <p class="card__text">{{ route.description|default:"Описание не заполнено." }}</p>
 
         <dl class="facts">
             <div>

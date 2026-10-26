@@ -12,17 +12,13 @@
 
     <p class="card__text">
         Маршрут «{{ excursion.route.name }}»,
-        {{ excursion.duration_hours|floatformat:1 }} ч.
+        {{ excursion.duration_hours|floatformat:1 }} ч,
+        до {{ excursion.max_participants }} человек,
+        от {{ excursion.min_age }} лет.
     </p>
 
-    <div class="chips">
-        <span class="chip">{{ excursion.kind }}</span>
-        <span class="chip">до {{ excursion.max_participants }} человек</span>
-        <span class="chip">от {{ excursion.min_age }} лет</span>
-    </div>
-
     <div class="card__foot">
-        <span class="card__meta">за человека</span>
+        <span class="card__meta">{{ excursion.kind }}</span>
         <span class="card__price">
             {{ excursion.base_price|floatformat:0|intcomma }} ₽
         </span>

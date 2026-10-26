@@ -11,11 +11,10 @@
 
     <p class="card__text">{{ route.description|default:"Описание не заполнено." }}</p>
 
-    <div class="chips">
-        <span class="chip chip--accent">{{ route.difficulty }}</span>
-        <span class="chip">{{ route.duration_hours|floatformat:1 }} ч</span>
-        <span class="chip">{{ route.distance_km|floatformat:1 }} км</span>
-    </div>
-
-    <p class="card__meta">языки: {{ route.required_languages|join:", " }}</p>
+    <p class="card__meta">
+        {{ route.difficulty }} ·
+        {{ route.duration_hours|floatformat:1 }} ч ·
+        {{ route.distance_km|floatformat:1 }} км ·
+        {{ route.required_languages|join:", " }}
+    </p>
 </article>
