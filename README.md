@@ -360,24 +360,40 @@ python main.py
 
 ```
 py -3.12 -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-python manage.py migrate
-python -m db.import_json
-python manage.py runserver
+.venv\Scripts\python.exe -m pip install -r requirements.txt
+.venv\Scripts\python.exe manage.py migrate
+.venv\Scripts\python.exe -m db.import_json
+.venv\Scripts\python.exe manage.py runserver
 ```
 
 После запуска открыть `http://127.0.0.1:8000/`.
+
+Если окружение и база уже готовы, сайт поднимается одной командой:
+
+```
+.\.venv\Scripts\python.exe manage.py runserver
+```
+
+или двойным щелчком по `run_web.bat`.
 
 `python manage.py migrate` нужен один раз: команда создаёт служебные таблицы
 Django (сессии и администратор). Данные проекта при этом не затрагиваются.
 `python -m db.import_json` создаёт таблицы проекта (если их нет) и переносит
 в них данные из JSON.
 
+Python вызывается по полному пути `.venv\Scripts\python.exe`, потому что
+на этой машине выполнение скриптов PowerShell ограничено и активация
+окружения через `Activate.ps1` не срабатывает. При желании можно включить
+её для текущего окна:
+
+```
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
 ## Тесты
 
 ```
-python -m pytest
+.\.venv\Scripts\python.exe -m pytest
 ```
 
 Тесты проверяют классы предметной области, работу с JSON, базу данных
@@ -389,7 +405,7 @@ python -m pytest
 ## Проверка оформления
 
 ```
-flake8 . --extend-exclude=.venv
+.\.venv\Scripts\python.exe -m flake8 . --extend-exclude=.venv
 ```
 
 ## Возврат исходных данных
