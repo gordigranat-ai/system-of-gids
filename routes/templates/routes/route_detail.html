@@ -1,83 +1,47 @@
 {% extends "base.html" %}
-{% load humanize %}
 
 {% block title %}{{ route.name }} – маршрут{% endblock %}
 
 {% block content %}
-    <div class="page-head">
-        <div>
-            <h1>{{ route.name }}</h1>
-            <p class="page-head__hint">
-                {{ route.difficulty }} ·
-                {{ route.duration_hours|floatformat:1 }} ч ·
+    <h1>{{ route.name }}</h1>
+
+    <div class="card route-card mb-3">
+        <div class="card-body">
+            <p class="card-text">{{ route.description|default:"Описание не заполнено." }}</p>
+            <p class="card-text">
+                <strong>Продолжительность:</strong>
+                {{ route.duration_hours|floatformat:1 }} ч
+            </p>
+            <p class="card-text">
+                <strong>Протяжённость:</strong>
                 {{ route.distance_km|floatformat:1 }} км
+            </p>
+            <p class="card-text">
+                <strong>Сложность:</strong> {{ route.difficulty }}
+            </p>
+            <p class="card-text">
+                <strong>Языки:</strong>
+                {{ route.required_languages|join:", "|default:"не указаны" }}
             </p>
         </div>
     </div>
 
-    <section class="detail">
-        <p class="card__text">{{ route.description|default:"Описание не заполнено." }}</p>
+    <h2 class="h4">Экскурсии на маршруте</h2>
 
-        <dl class="facts">
-            <div>
-                <dt>Продолжительность</dt>
-                <dd>{{ route.duration_hours|floatformat:1 }} ч</dd>
-            </div>
-            <div>
-                <dt>Протяжённость</dt>
-                <dd>{{ route.distance_km|floatformat:1 }} км</dd>
-            </div>
-            <div>
-                <dt>Сложность</dt>
-                <dd>{{ route.difficulty }}</dd>
-            </div>
-            <div>
-                <dt>Языки</dt>
-                <dd>{{ route.required_languages|join:", "|default:"не указаны" }}</dd>
-            </div>
-        </dl>
-    </section>
+    <ul class="list-group">
+        {% for excursion in excursions %}
+            <li class="list-group-item">
+                <a href="{% url 'excursions:detail' excursion.id %}">
+                    {{ excursion.title }}
+                </a>
+                – {{ excursion.base_price|floatformat:0 }} ₽ за человека
+            </li>
+        {% empty %}
+            <li class="list-group-item">Экскурсий по этому маршруту нет.</li>
+        {% endfor %}
+    </ul>
 
-    <h2 class="section-title">Экскурсии на маршруте</h2>
-
-    <div class="table-wrap">
-        <table class="data">
-            <thead>
-                <tr>
-                    <th scope="col">Экскурсия</th>
-                    <th scope="col">Вид</th>
-                    <th scope="col" class="num">Цена</th>
-                    <th scope="col" class="num">Мест</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for excursion in excursions %}
-                    <tr>
-                        <td>
-                            <a href="{% url 'excursions:detail' excursion.id %}">
-                                {{ excursion.title }}
-                            </a>
-                        </td>
-                        <td>{{ excursion.kind }}</td>
-                        <td class="num">
-                            {{ excursion.base_price|floatformat:0|intcomma }} ₽
-                        </td>
-                        <td class="num">{{ excursion.max_participants }}</td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="4" class="empty-cell">
-                            Экскурсий по этому маршруту нет.
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <p class="mt-4">
-        <a href="{% url 'routes:list' %}" class="button button--outline">
-            Все маршруты
-        </a>
-    </p>
+    <a href="{% url 'routes:list' %}" class="btn btn-outline-secondary mt-3">
+        ← к списку маршрутов
+    </a>
 {% endblock %}

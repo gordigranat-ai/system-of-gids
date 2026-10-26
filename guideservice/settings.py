@@ -19,7 +19,7 @@ SECRET_KEY = 'django-insecure-*2qa5@+)i-9og#4_k1o#14wqzr@sb9$w4!8i2(3za_gp4)e7%7
 # Отладку можно переключать без правки файла: DJANGO_DEBUG=0 нужен, чтобы
 # увидеть собственную страницу 404 — при DEBUG = True Django показывает
 # техническую страницу отладки.
-DEBUG = os.environ.get("DJANGO_DEBUG", "1") == "1"
+DEBUG = os.environ.get("DJANGO_DEBUG", "1").lower() not in ("0", "false", "no")
 
 # При DEBUG = False Django принимает запросы только к адресам из этого списка.
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
@@ -33,8 +33,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Фильтр intcomma: разделяет разряды в суммах (41 400 ₽).
-    'django.contrib.humanize',
     'homepage',
     'guides',
     'routes',

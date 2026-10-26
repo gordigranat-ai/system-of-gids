@@ -1,25 +1,15 @@
-"""Главная страница и обработчик 404.
+"""Страницы главного приложения: главная страница и обработчик 404.
 
-Счётчики для главной считает один SQL-запрос.
+HTML здесь больше не собирается: view-функция выбирает шаблон и передаёт
+в него данные через контекст.
 """
 
 from django.shortcuts import render
 
-from db.database import fetch_one
-
-COUNTERS_SQL = """
-    SELECT
-        (SELECT COUNT(*) FROM guides) AS guides,
-        (SELECT COUNT(*) FROM routes) AS routes,
-        (SELECT COUNT(*) FROM excursions) AS excursions,
-        (SELECT COUNT(*) FROM schedules) AS schedules;
-"""
-
 
 def index(request):
     """Главная страница проекта."""
-    context = {"counters": fetch_one(COUNTERS_SQL)}
-    return render(request, "homepage/index.html", context)
+    return render(request, "homepage/index.html")
 
 
 def page_not_found(request, exception):

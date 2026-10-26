@@ -323,14 +323,6 @@ class Schedule:
         return self.excursion.max_participants - self.booked
 
     @property
-    def fill_percent(self):
-        """Заполняемость занятия в процентах — для полоски загрузки."""
-        capacity = self.excursion.max_participants
-        if capacity <= 0:
-            return 0
-        return round(self.booked * 100 / capacity)
-
-    @property
     def revenue(self):
         """Выручка занятия."""
         return round(self.excursion.base_price * self.booked, 2)

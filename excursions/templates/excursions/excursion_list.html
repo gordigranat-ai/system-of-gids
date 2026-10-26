@@ -3,18 +3,13 @@
 {% block title %}Экскурсии – экскурсионное бюро{% endblock %}
 
 {% block content %}
-    <div class="page-head">
-        <div>
-            <h1>Экскурсии</h1>
-            <p class="page-head__hint">Всего экскурсий: {{ excursions|length }}</p>
-        </div>
-    </div>
+    <h1>Экскурсии</h1>
 
-    <div class="cards">
-        {% for excursion in excursions %}
-            {% include "excursions/includes/excursion_card.html" %}
-        {% empty %}
-            <div class="empty">Экскурсий пока нет.</div>
-        {% endfor %}
-    </div>
+    <p class="text-muted">Всего экскурсий: {{ excursions|length }}</p>
+
+    {% for excursion in excursions %}
+        {% include "excursions/includes/excursion_card.html" %}
+    {% empty %}
+        <p>Экскурсий пока нет.</p>
+    {% endfor %}
 {% endblock %}

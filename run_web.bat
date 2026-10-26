@@ -1,6 +1,8 @@
 @echo off
 rem Guide service: start the Django development server and open it in a browser.
 setlocal
+rem Clear the debug flag so the CSS is always served.
+set "DJANGO_DEBUG="
 cd /d "%~dp0"
 
 if not exist ".venv\Scripts\python.exe" (

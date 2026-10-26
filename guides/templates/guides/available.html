@@ -3,41 +3,52 @@
 {% block title %}Свободные гиды – экскурсионное бюро{% endblock %}
 
 {% block content %}
-    <div class="page-head">
-        <div>
-            <h1>Гиды, свободные на дату</h1>
-            {% if schedule_date %}
-                <p class="page-head__hint">
-                    {{ schedule_date }} · найдено: {{ guides|length }}
-                </p>
-            {% endif %}
-        </div>
+    <h1>Гиды, свободные на дату</h1>
 
-        <a href="{% url 'guides:list' %}" class="button button--outline">
-            Все гиды
-        </a>
-    </div>
-
-    <form method="get" class="search">
-        <div>
-            <label for="date">Дата</label>
+    <form method="get" class="row g-2 align-items-end mb-3">
+        <div class="col-auto">
+            <label for="date" class="form-label">Дата:</label>
             <input
                 type="date"
                 id="date"
                 name="date"
                 value="{{ schedule_date|default:'' }}"
+                class="form-control"
             >
         </div>
-        <button type="submit" class="button button--primary">Найти</button>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Найти</button>
+        </div>
     </form>
 
     {% if schedule_date %}
-        <div class="list">
+        <h2 class="h5">Дата: {{ schedule_date }}</h2>
+
+        <p class="text-muted">Найдено гидов: {{ guides|length }}</p>
+
+        <ul class="list-group">
             {% for guide in guides %}
-                {% include "guides/includes/guide_card.html" %}
+                <li class="list-group-item guide-card d-flex justify-content-between align-items-center">
+                    <span>
+                        <a href="{% url 'guides:detail' guide.id %}">
+                            {{ guide.name|default:"Без имени" }}
+                        </a>
+                        <small class="text-muted">{{ guide.specialization }}</small>
+                    </span>
+                    <span class="text-muted">
+                        стаж: {{ guide.experience_years }} лет ·
+                        рейтинг {{ guide.rating|floatformat:1 }}
+                    </span>
+                </li>
             {% empty %}
-                <div class="empty">На эту дату все гиды заняты.</div>
+                <li class="list-group-item">
+                    На выбранную дату свободных гидов нет.
+                </li>
             {% endfor %}
-        </div>
+        </ul>
     {% endif %}
+
+    <a href="{% url 'guides:list' %}" class="btn btn-outline-secondary mt-3">
+        ← к списку гидов
+    </a>
 {% endblock %}

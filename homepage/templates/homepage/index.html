@@ -3,59 +3,14 @@
 {% block title %}Главная – экскурсионное бюро{% endblock %}
 
 {% block content %}
-    <section class="intro">
-        <h1>Сервис управления гидами</h1>
+    <h1 class="display-4">Сервис управления гидами</h1>
 
-        <p>
-            Расписание городских экскурсий: кто ведёт, по какому маршруту
-            и сколько мест уже занято.
-        </p>
+    <p class="lead">
+        Экскурсионное бюро: гиды, маршруты, экскурсии и расписание.
+    </p>
 
-        <div class="intro__links">
-            <a class="link" href="{% url 'schedules:list' %}">Расписание</a>
-            <a class="link" href="{% url 'guides:available' %}">Найти свободного гида</a>
-        </div>
-    </section>
-
-    {% if counters %}
-        <section class="stats">
-            <div>
-                <div class="stat__value">{{ counters.guides }}</div>
-                <div class="stat__label">гидов</div>
-            </div>
-            <div>
-                <div class="stat__value">{{ counters.routes }}</div>
-                <div class="stat__label">маршрутов</div>
-            </div>
-            <div>
-                <div class="stat__value">{{ counters.excursions }}</div>
-                <div class="stat__label">экскурсий</div>
-            </div>
-            <div>
-                <div class="stat__value">{{ counters.schedules }}</div>
-                <div class="stat__label">занятий</div>
-            </div>
-        </section>
-    {% endif %}
-
-    <p class="label">Разделы</p>
-
-    <section class="sections">
-        <a class="section" href="{% url 'guides:list' %}">
-            <span class="section__title">Гиды</span>
-            <span class="section__text">Специализация, языки, стаж и рейтинг</span>
-        </a>
-        <a class="section" href="{% url 'routes:list' %}">
-            <span class="section__title">Маршруты</span>
-            <span class="section__text">Сложность, длительность и протяжённость</span>
-        </a>
-        <a class="section" href="{% url 'excursions:list' %}">
-            <span class="section__title">Экскурсии</span>
-            <span class="section__text">Цена, число мест и возраст участников</span>
-        </a>
-        <a class="section" href="{% url 'schedules:list' %}">
-            <span class="section__title">Расписание</span>
-            <span class="section__text">Дата, время, гид и загрузка занятия</span>
-        </a>
-    </section>
+    <a href="{% url 'guides:list' %}" class="btn btn-primary me-2">Гиды</a>
+    <a href="{% url 'routes:list' %}" class="btn btn-primary me-2">Маршруты</a>
+    <a href="{% url 'excursions:list' %}" class="btn btn-primary me-2">Экскурсии</a>
+    <a href="{% url 'schedules:list' %}" class="btn btn-secondary">Расписание</a>
 {% endblock %}

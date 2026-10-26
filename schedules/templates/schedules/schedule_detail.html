@@ -1,75 +1,55 @@
 {% extends "base.html" %}
-{% load humanize %}
 
 {% block title %}Занятие {{ schedule.date }} – расписание{% endblock %}
 
 {% block content %}
-    <div class="page-head">
-        <div>
-            <h1>{{ schedule.excursion.title }}</h1>
-            <p class="page-head__hint">
-                {{ schedule.date }} · {{ schedule.start_time }} ·
-                {{ schedule.guide.name }}
+    <h1>{{ schedule.excursion.title }}</h1>
+
+    <div class="card schedule-card mb-3">
+        <div class="card-body">
+            <p class="card-text">
+                <strong>Дата:</strong> {{ schedule.date }}
+            </p>
+            <p class="card-text">
+                <strong>Начало:</strong> {{ schedule.start_time }}
+            </p>
+            <p class="card-text">
+                <strong>Гид:</strong>
+                <a href="{% url 'guides:detail' schedule.guide.id %}">
+                    {{ schedule.guide.name }}
+                </a>
+            </p>
+            <p class="card-text">
+                <strong>Экскурсия:</strong>
+                <a href="{% url 'excursions:detail' schedule.excursion.id %}">
+                    {{ schedule.excursion.title }}
+                </a>
+            </p>
+            <p class="card-text">
+                <strong>Маршрут:</strong> {{ schedule.route.name }}
+                ({{ schedule.excursion.duration_hours|floatformat:1 }} ч)
+            </p>
+            <p class="card-text">
+                <strong>Забронировано:</strong>
+                {{ schedule.booked }} из {{ schedule.excursion.max_participants }} мест
+            </p>
+            <p class="card-text">
+                <strong>Свободно мест:</strong> {{ schedule.free_seats }}
+            </p>
+            <p class="card-text">
+                <strong>Выручка:</strong> {{ schedule.revenue|floatformat:0 }} ₽
+            </p>
+            <p class="card-text">
+                Статус: {% include "schedules/includes/schedule_status.html" %}
+            </p>
+            <p class="card-text">
+                <strong>Примечание:</strong>
+                {{ schedule.note|default:"без примечания" }}
             </p>
         </div>
-
-        {% include "schedules/includes/schedule_status.html" %}
     </div>
 
-    <section class="detail">
-        <dl class="facts">
-            <div>
-                <dt>Дата и время</dt>
-                <dd>{{ schedule.date }}, {{ schedule.start_time }}</dd>
-            </div>
-            <div>
-                <dt>Гид</dt>
-                <dd>
-                    <a href="{% url 'guides:detail' schedule.guide.id %}">
-                        {{ schedule.guide.name }}
-                    </a>
-                </dd>
-            </div>
-            <div>
-                <dt>Экскурсия</dt>
-                <dd>
-                    <a href="{% url 'excursions:detail' schedule.excursion.id %}">
-                        {{ schedule.excursion.title }}
-                    </a>
-                </dd>
-            </div>
-            <div>
-                <dt>Маршрут</dt>
-                <dd>
-                    {{ schedule.route.name }} ·
-                    {{ schedule.excursion.duration_hours|floatformat:1 }} ч
-                </dd>
-            </div>
-            <div>
-                <dt>Забронировано</dt>
-                <dd>
-                    {{ schedule.booked }} из
-                    {{ schedule.excursion.max_participants }} мест
-                </dd>
-            </div>
-            <div>
-                <dt>Свободно мест</dt>
-                <dd>{{ schedule.free_seats }}</dd>
-            </div>
-            <div>
-                <dt>Выручка</dt>
-                <dd>{{ schedule.revenue|floatformat:0|intcomma }} ₽</dd>
-            </div>
-            <div>
-                <dt>Примечание</dt>
-                <dd>{{ schedule.note|default:"без примечания" }}</dd>
-            </div>
-        </dl>
-    </section>
-
-    <p class="mt-4">
-        <a href="{% url 'schedules:list' %}" class="button button--outline">
-            Всё расписание
-        </a>
-    </p>
+    <a href="{% url 'schedules:list' %}" class="btn btn-outline-secondary">
+        ← к расписанию
+    </a>
 {% endblock %}

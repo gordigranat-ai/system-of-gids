@@ -1,26 +1,20 @@
 {% comment %}
-Строка списка гидов. Подключается через {% include %} из guide_list.html
-и available.html, поэтому оформление не дублируется.
+Одна строка списка гидов. Шаблон подключается через {% include %}
+из guide_list.html.
 {% endcomment %}
-<div class="item">
-    <span class="avatar" aria-hidden="true">{{ guide.name|slice:":1" }}</span>
-
-    <div class="item__main">
-        <a class="item__name" href="{% url 'guides:detail' guide.id %}">
+<li class="list-group-item guide-card d-flex justify-content-between align-items-center">
+    <span>
+        <a href="{% url 'guides:detail' guide.id %}">
             {{ guide.name|default:"Без имени" }}
         </a>
+        <small class="text-muted">{{ guide.specialization }}</small>
+    </span>
 
-        <p class="meta">
-            {{ guide.specialization|default:"специализация не указана" }} ·
-            {{ guide.languages|join:", " }} ·
-            стаж {{ guide.experience_years }} лет ·
-            ★ {{ guide.rating|floatformat:1 }}
-        </p>
-    </div>
+    <span class="text-muted">языки: {{ guide.languages|join:", " }}</span>
 
     {% if guide.is_active %}
-        <span class="badge badge--ok status-badge">работает</span>
+        <span class="badge bg-success status-badge">работает</span>
     {% else %}
-        <span class="badge badge--off status-badge">не работает</span>
+        <span class="badge bg-secondary status-badge">не работает</span>
     {% endif %}
-</div>
+</li>
