@@ -5,7 +5,7 @@
 <article class="card route-card mb-3">
     <div class="card-body">
         <h2 class="h5 card-title">
-            <a href="{% url 'routes:detail' route.id %}">
+            <a href="{% url 'routes:detail' route.slug %}">
                 {{ route.name|default:"Без названия" }}
             </a>
         </h2>

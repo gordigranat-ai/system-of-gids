@@ -33,13 +33,13 @@ def test_get_by_pk(dataset):
 
 def test_filter_one_condition(many_schedules):
     """Фильтр по одному условию."""
-    done = Schedule.objects.filter(status="проведена")
+    done = Schedule.objects.filter(status="completed")
     assert done.count() == 3
 
 
 def test_filter_several_conditions(many_schedules):
     """Фильтр по нескольким условиям сразу."""
-    selected = Schedule.objects.filter(status="проведена", booked__gte=2)
+    selected = Schedule.objects.filter(status="completed", booked__gte=2)
     assert selected.count() == 3
 
 
@@ -51,22 +51,22 @@ def test_filter_by_related_field(many_schedules):
 
 def test_exclude(dataset):
     """Исключение записей по условию."""
-    assert Schedule.objects.exclude(status="отменена").count() == 1
+    assert Schedule.objects.exclude(status="cancelled").count() == 1
     Schedule.objects.create(
         excursion=dataset["excursion"],
         guide=dataset["guide"],
         date=date(2026, 5, 1),
         start_time="09:00",
-        status="отменена",
+        status="cancelled",
     )
-    assert Schedule.objects.exclude(status="отменена").count() == 1
+    assert Schedule.objects.exclude(status="cancelled").count() == 1
     assert Schedule.objects.count() == 2
 
 
 def test_q_objects_or(many_schedules):
     """Составное условие через Q: «или» по двум полям."""
     result = Schedule.objects.filter(
-        Q(status="проведена") | Q(booked__gte=6),
+        Q(status="completed") | Q(booked__gte=6),
     )
     assert result.count() >= 4
 

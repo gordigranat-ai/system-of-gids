@@ -75,7 +75,7 @@ def schedule(db, excursion, guide):
         date=date(2026, 3, 10),
         start_time=time(10, 0),
         booked=8,
-        status="запланирована",
+        status="active",
         note="Группа туристов",
     )
 
@@ -104,6 +104,6 @@ def many_schedules(db, excursion, guide):
             date=date(2026, 3, number),
             start_time=time(10, 0),
             booked=number,
-            status="запланирована" if number % 2 else "проведена",
+            status="active" if number % 2 else "completed",
         ))
     return schedules

@@ -1,23 +1,86 @@
 """Модель занятия в расписании.
 
-Занятие связывает экскурсию и гида: это две связи «многие к одному».
+Занятие связывает экскурсию и гида. Статус описан через TextChoices:
+в базе хранятся короткие латинские коды, а в интерфейсе показываются
+русские подписи. Менеджер Schedule.objects даёт готовые методы выборки.
 """
 
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Sum
 
 from excursions.models import Excursion
 from guides.models import Guide
 
-STATUS_PLANNED = "запланирована"
-STATUS_DONE = "проведена"
-STATUS_CANCELLED = "отменена"
 
-STATUS_CHOICES = (
-    (STATUS_PLANNED, "запланирована"),
-    (STATUS_DONE, "проведена"),
-    (STATUS_CANCELLED, "отменена"),
-)
+class ScheduleStatus(models.TextChoices):
+    """Статус занятия: коды для базы и подписи для интерфейса."""
+
+    ACTIVE = "active", "запланирована"
+    COMPLETED = "completed", "проведена"
+    CANCELLED = "cancelled", "отменена"
+
+
+class ScheduleQuerySet(models.QuerySet):
+    """Набор занятий с часто используемыми выборками."""
+
+    def with_related(self):
+        """Подтянуть экскурсию, её маршрут и гида одним запросом."""
+        return self.select_related("excursion", "excursion__route", "guide")
+
+    def active(self):
+        """Занятия без отменённых."""
+        return self.exclude(status=ScheduleStatus.CANCELLED)
+
+    def completed(self):
+        """Проведённые занятия."""
+        return self.filter(status=ScheduleStatus.COMPLETED)
+
+    def cancelled(self):
+        """Отменённые занятия."""
+        return self.filter(status=ScheduleStatus.CANCELLED)
+
+    def for_guide(self, guide):
+        """Занятия конкретного гида (объект или его идентификатор)."""
+        guide_id = getattr(guide, "pk", guide)
+        return self.filter(guide_id=guide_id)
+
+    def on_date(self, day):
+        """Занятия на указанную дату."""
+        return self.filter(date=day)
+
+    def busy_guides(self, day):
+        """Гиды, у которых на дату есть неотменённое занятие."""
+        return (
+            self.on_date(day)
+            .exclude(status=ScheduleStatus.CANCELLED)
+            .values("guide_id")
+        )
+
+    def totals(self):
+        """Итоги по набору: количество, места и выручка."""
+        return self.aggregate(
+            schedules=models.Count("id"),
+            active=models.Count(
+                "id",
+                filter=Q(status=ScheduleStatus.ACTIVE),
+            ),
+            completed=models.Count(
+                "id",
+                filter=Q(status=ScheduleStatus.COMPLETED),
+            ),
+            cancelled=models.Count(
+                "id",
+                filter=Q(status=ScheduleStatus.CANCELLED),
+            ),
+            booked_total=Sum("booked"),
+            revenue=Sum(
+                models.F("booked") * models.F("excursion__base_price"),
+                output_field=models.DecimalField(
+                    max_digits=12,
+                    decimal_places=2,
+                ),
+            ),
+        )
 
 
 class Schedule(models.Model):
@@ -44,17 +107,20 @@ class Schedule(models.Model):
     booked = models.PositiveIntegerField(
         default=0,
         verbose_name="Забронировано мест",
+        help_text="Сколько мест уже занято на этом занятии",
     )
     status = models.CharField(
         max_length=20,
-        choices=STATUS_CHOICES,
-        default=STATUS_PLANNED,
+        choices=ScheduleStatus.choices,
+        default=ScheduleStatus.ACTIVE,
         verbose_name="Статус",
     )
     note = models.TextField(
         blank=True,
         verbose_name="Примечание",
     )
+
+    objects = ScheduleQuerySet.as_manager()
 
     class Meta:
         ordering = ["date", "start_time"]
@@ -96,14 +162,18 @@ class Schedule(models.Model):
 
     @property
     def is_cancelled(self):
-        return self.status == STATUS_CANCELLED
+        return self.status == ScheduleStatus.CANCELLED
+
+    @property
+    def is_completed(self):
+        return self.status == ScheduleStatus.COMPLETED
 
     def cancel(self):
         """Отменить занятие, не удаляя его из истории."""
-        self.status = STATUS_CANCELLED
+        self.status = ScheduleStatus.CANCELLED
         self.save(update_fields=["status"])
 
     def mark_done(self):
         """Отметить занятие проведённым."""
-        self.status = STATUS_DONE
+        self.status = ScheduleStatus.COMPLETED
         self.save(update_fields=["status"])

@@ -1,32 +1,20 @@
 """Страницы расписания: список, активные занятия, статистика, карточка.
 
-Все данные получает Django ORM: filter(), exclude(), Q-объекты,
-order_by(), select_related(), annotate(), aggregate() и Paginator.
+Все данные получает Django ORM: методы менеджера Schedule.objects,
+filter(), exclude(), Q-объекты, order_by(), select_related(), annotate(),
+aggregate() и Paginator.
 """
 
 from datetime import date
 
 from django.core.paginator import Paginator
-from django.db.models import (
-    Count,
-    DecimalField,
-    F,
-    FloatField,
-    Q,
-    Sum,
-)
+from django.db.models import Count, DecimalField, F, FloatField, Q, Sum
 from django.db.models.functions import Cast, Round
 from django.shortcuts import render
 
 from excursions.models import Excursion
 from guides.models import Guide
-from schedules.models import (
-    STATUS_CANCELLED,
-    STATUS_CHOICES,
-    STATUS_DONE,
-    STATUS_PLANNED,
-    Schedule,
-)
+from schedules.models import Schedule, ScheduleStatus
 
 SORT_FIELDS = {
     "date": ("date", "start_time"),
@@ -36,8 +24,7 @@ SORT_FIELDS = {
     "guide": ("guide__name", "date"),
 }
 
-STATUS_VALUES = [value for value, _ in STATUS_CHOICES]
-ACTIVE_STATUSES = (STATUS_PLANNED, STATUS_DONE)
+STATUS_VALUES = [value for value, _ in ScheduleStatus.choices]
 PAGE_SIZE = 5
 
 REVENUE_FIELD = DecimalField(max_digits=12, decimal_places=2)
@@ -86,23 +73,19 @@ def _apply_filters(queryset, filters):
     except ValueError:
         error = "Даты должны быть в формате ГГГГ-ММ-ДД."
 
-    queryset = queryset.order_by(*SORT_FIELDS.get(filters["sort"], SORT_FIELDS["date"]))
-    return queryset, error
-
-
-def _base_queryset():
-    """Набор занятий со связанными объектами одним запросом."""
-    return Schedule.objects.select_related(
-        "excursion",
-        "excursion__route",
-        "guide",
+    queryset = queryset.order_by(
+        *SORT_FIELDS.get(filters["sort"], SORT_FIELDS["date"])
     )
+    return queryset, error
 
 
 def schedules(request):
     """Список занятий: фильтры, сортировка и постраничный вывод."""
     filters = _read_filters(request)
-    queryset, error = _apply_filters(_base_queryset(), filters)
+    queryset, error = _apply_filters(
+        Schedule.objects.with_related(),
+        filters,
+    )
 
     paginator = Paginator(queryset, PAGE_SIZE)
     page_obj = paginator.get_page(request.GET.get("page"))
@@ -116,7 +99,7 @@ def schedules(request):
         "paginator": paginator,
         "querystring": params.urlencode(),
         "guides": Guide.objects.order_by("name"),
-        "statuses": STATUS_CHOICES,
+        "statuses": ScheduleStatus.choices,
         "error": error,
         "filters": filters,
     }
@@ -125,12 +108,7 @@ def schedules(request):
 
 def active_schedules(request):
     """Занятия, которые не отменены: их ещё предстоит провести."""
-    queryset = (
-        _base_queryset()
-        .exclude(status=STATUS_CANCELLED)
-        .order_by("date", "start_time")
-    )
-    context = {"schedules": queryset}
+    context = {"schedules": Schedule.objects.with_related().active()}
     return render(request, "schedules/active.html", context)
 
 
@@ -138,13 +116,16 @@ def statistics(request):
     """Статистика по статусам, гидам и экскурсиям через annotate/aggregate."""
     totals = Schedule.objects.aggregate(
         schedules=Count("id"),
-        planned=Count("id", filter=Q(status=STATUS_PLANNED)),
-        done=Count("id", filter=Q(status=STATUS_DONE)),
-        cancelled=Count("id", filter=Q(status=STATUS_CANCELLED)),
-        booked_total=Sum("booked", filter=Q(status__in=ACTIVE_STATUSES)),
+        active=Count("id", filter=Q(status=ScheduleStatus.ACTIVE)),
+        completed=Count("id", filter=Q(status=ScheduleStatus.COMPLETED)),
+        cancelled=Count("id", filter=Q(status=ScheduleStatus.CANCELLED)),
+        booked_total=Sum(
+            "booked",
+            filter=~Q(status=ScheduleStatus.CANCELLED),
+        ),
         revenue=Sum(
             F("booked") * F("excursion__base_price"),
-            filter=Q(status__in=ACTIVE_STATUSES),
+            filter=~Q(status=ScheduleStatus.CANCELLED),
             output_field=REVENUE_FIELD,
         ),
     )
@@ -152,11 +133,11 @@ def statistics(request):
     by_guide = Guide.objects.annotate(
         schedules_count=Count(
             "schedules",
-            filter=Q(schedules__status__in=ACTIVE_STATUSES),
+            filter=~Q(schedules__status=ScheduleStatus.CANCELLED),
         ),
         booked_total=Sum(
             "schedules__booked",
-            filter=Q(schedules__status__in=ACTIVE_STATUSES),
+            filter=~Q(schedules__status=ScheduleStatus.CANCELLED),
         ),
     ).order_by("-schedules_count", "name")
 
@@ -164,15 +145,15 @@ def statistics(request):
         Excursion.objects.annotate(
             schedules_count=Count(
                 "schedules",
-                filter=Q(schedules__status__in=ACTIVE_STATUSES),
+                filter=~Q(schedules__status=ScheduleStatus.CANCELLED),
             ),
             booked_total=Sum(
                 "schedules__booked",
-                filter=Q(schedules__status__in=ACTIVE_STATUSES),
+                filter=~Q(schedules__status=ScheduleStatus.CANCELLED),
             ),
             revenue=Sum(
                 F("schedules__booked") * F("base_price"),
-                filter=Q(schedules__status__in=ACTIVE_STATUSES),
+                filter=~Q(schedules__status=ScheduleStatus.CANCELLED),
                 output_field=REVENUE_FIELD,
             ),
         )
@@ -201,7 +182,7 @@ def statistics(request):
 def schedule_detail(request, schedule_id):
     """Карточка занятия: участники, свободные места, выручка и статус."""
     try:
-        schedule = _base_queryset().get(pk=schedule_id)
+        schedule = Schedule.objects.with_related().get(pk=schedule_id)
     except Schedule.DoesNotExist:
         context = {
             "message": "Занятие не найдено",

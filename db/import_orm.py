@@ -28,7 +28,14 @@ from db.database import DB_PATH  # noqa: E402
 from excursions.models import Excursion  # noqa: E402
 from guides.models import Guide  # noqa: E402
 from routes.models import Route  # noqa: E402
-from schedules.models import Schedule  # noqa: E402
+from schedules.models import Schedule, ScheduleStatus  # noqa: E402
+
+# Статусы в базе ПР7 записаны по-русски, в моделях используются коды.
+STATUS_CODES = {
+    "запланирована": ScheduleStatus.ACTIVE,
+    "проведена": ScheduleStatus.COMPLETED,
+    "отменена": ScheduleStatus.CANCELLED,
+}
 
 
 def read_source():
@@ -147,7 +154,7 @@ def import_schedules(source):
             date=date.fromisoformat(row["date"]),
             start_time=time.fromisoformat(row["start_time"]),
             booked=row["booked"],
-            status=row["status"],
+            status=STATUS_CODES[row["status"]],
             note=row["note"] or "",
         )
         for row in source["schedules"]

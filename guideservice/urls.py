@@ -4,6 +4,7 @@
 URL на префикс и остаток, который ищется в urls.py приложения.
 """
 
+from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 
@@ -15,6 +16,12 @@ urlpatterns = [
     path("excursions/", include("excursions.urls")),
     path("schedules/", include("schedules.urls")),
 ]
+
+# Панель отладки подключается только при включённой отладке.
+if settings.DEBUG:
+    urlpatterns = [
+        path("__debug__/", include("debug_toolbar.urls")),
+    ] + urlpatterns
 
 # Собственная страница 404. Обработчик читается только из этого файла,
 # поэтому действует сразу для всех приложений проекта.

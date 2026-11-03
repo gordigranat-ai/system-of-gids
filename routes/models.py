@@ -1,12 +1,41 @@
-"""Модель маршрута экскурсии."""
+"""Модель маршрута экскурсии.
+
+У маршрута есть человекочитаемый адрес (slug) и метод get_absolute_url(),
+который строит ссылку на страницу маршрута по имени маршрута.
+"""
 
 from django.db import models
+from django.urls import reverse
+from django.utils.text import slugify
 
 DIFFICULTIES = (
     ("лёгкий", "лёгкий"),
     ("средний", "средний"),
     ("сложный", "сложный"),
 )
+
+# Таблица транслитерации: slug маршрута должен состоять из латиницы.
+TRANSLIT = {
+    "а": "a", "б": "b", "в": "v", "г": "g", "д": "d", "е": "e",
+    "ё": "e", "ж": "zh", "з": "z", "и": "i", "й": "y", "к": "k",
+    "л": "l", "м": "m", "н": "n", "о": "o", "п": "p", "р": "r",
+    "с": "s", "т": "t", "у": "u", "ф": "f", "х": "h", "ц": "ts",
+    "ч": "ch", "ш": "sh", "щ": "sch", "ъ": "", "ы": "y", "ь": "",
+    "э": "e", "ю": "yu", "я": "ya",
+}
+
+
+def transliterate(text):
+    """Перевести кириллицу в латиницу для slug."""
+    return "".join(TRANSLIT.get(char, char) for char in text.lower())
+
+
+def make_slug(name, number=None):
+    """Собрать slug из названия; number добавляется для уникальности."""
+    base = slugify(transliterate(name)) or "route"
+    if number is not None:
+        return f"{base}-{number}"
+    return base
 
 
 class Route(models.Model):
@@ -15,6 +44,13 @@ class Route(models.Model):
     name = models.CharField(
         max_length=200,
         verbose_name="Название маршрута",
+    )
+    slug = models.SlugField(
+        max_length=200,
+        unique=True,
+        blank=True,
+        verbose_name="Адрес страницы",
+        help_text="Заполняется автоматически из названия",
     )
     description = models.TextField(
         blank=True,
@@ -55,6 +91,22 @@ class Route(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.duration_hours} ч, {self.difficulty})"
+
+    def save(self, *args, **kwargs):
+        """Заполнить slug из названия, если он не задан вручную."""
+        if not self.slug:
+            base = make_slug(self.name)
+            candidate = base
+            number = 2
+            while Route.objects.filter(slug=candidate).exclude(pk=self.pk).exists():
+                candidate = make_slug(self.name, number)
+                number += 1
+            self.slug = candidate
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        """Ссылка на страницу маршрута по slug."""
+        return reverse("routes:detail", args=[self.slug])
 
     @property
     def required_languages_list(self):

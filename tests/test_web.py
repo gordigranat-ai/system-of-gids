@@ -83,7 +83,7 @@ def test_available_guides_ignores_cancelled(client, dataset):
         guide=guide,
         date=date(2026, 3, 12),
         start_time=time(9, 0),
-        status="отменена",
+        status="cancelled",
     )
     response = client.get("/guides/available/", {"date": "2026-03-12"})
     assert guide in list(response.context["guides"])
@@ -109,7 +109,7 @@ def test_routes_list_and_filter(client, dataset):
 def test_route_detail_and_404(client, dataset):
     """Карточка маршрута открывается, несуществующий маршрут — 404."""
     route = dataset["route"]
-    response = client.get(f"/routes/{route.pk}/")
+    response = client.get(f"/routes/{route.slug}/")
     assert response.status_code == 200
     assert "Исторический центр" in response.content.decode()
 
@@ -162,9 +162,9 @@ def test_schedules_pagination(client, many_schedules):
 
 def test_schedules_status_filter(client, many_schedules):
     """Фильтр по статусу оставляет только нужные занятия."""
-    response = client.get("/schedules/", {"status": "проведена"})
+    response = client.get("/schedules/", {"status": "completed"})
     assert all(
-        item.status == "проведена" for item in response.context["schedules"]
+        item.status == "completed" for item in response.context["schedules"]
     )
 
 
@@ -199,11 +199,11 @@ def test_active_schedules_excludes_cancelled(client, dataset):
         guide=dataset["guide"],
         date=date(2026, 7, 1),
         start_time=time(10, 0),
-        status="отменена",
+        status="cancelled",
     )
     response = client.get("/schedules/active/")
     statuses = [item.status for item in response.context["schedules"]]
-    assert "отменена" not in statuses
+    assert "cancelled" not in statuses
 
 
 def test_statistics_totals(client, dataset):
@@ -212,7 +212,7 @@ def test_statistics_totals(client, dataset):
     totals = response.context["totals"]
 
     assert totals["schedules"] == 1
-    assert totals["planned"] == 1
+    assert totals["active"] == 1
     assert totals["booked_total"] == 8
     assert totals["revenue"] == 14400
 

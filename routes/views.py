@@ -37,10 +37,10 @@ def routes(request):
     return render(request, "routes/route_list.html", context)
 
 
-def route_detail(request, route_id):
+def route_detail(request, route_slug):
     """Карточка маршрута и экскурсии, которые по нему проводятся."""
     try:
-        route = Route.objects.get(pk=route_id)
+        route = Route.objects.get(slug=route_slug)
     except Route.DoesNotExist:
         context = {
             "message": "Маршрут не найден",

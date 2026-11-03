@@ -13,7 +13,7 @@
             </p>
             <p class="card-text">
                 <strong>Маршрут:</strong>
-                <a href="{% url 'routes:detail' excursion.route.id %}">
+                <a href="{% url 'routes:detail' excursion.route.slug %}">
                     {{ excursion.route.name }}
                 </a>
                 ({{ excursion.duration_hours|floatformat:1 }} ч,

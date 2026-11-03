@@ -8,5 +8,5 @@ app_name = "routes"
 
 urlpatterns = [
     path("", views.routes, name="list"),
-    path("<int:route_id>/", views.route_detail, name="detail"),
+    path("<slug:route_slug>/", views.route_detail, name="detail"),
 ]

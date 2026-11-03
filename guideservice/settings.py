@@ -24,6 +24,15 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "1").lower() not in ("0", "false", "no")
 # При DEBUG = False Django принимает запросы только к адресам из этого списка.
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
+# Кому показывать панель Django Debug Toolbar (только своя машина).
+INTERNAL_IPS = ["127.0.0.1", "localhost"]
+
+# Панель отладчика: только на страницах сайта, панели раскрыты сразу.
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_COLLAPSED": False,
+    "SHOW_TOOLBAR_CALLBACK": "guideservice.debug.show_toolbar",
+}
+
 
 # Приложения проекта: главная страница и четыре сущности предметной области.
 INSTALLED_APPS = [
@@ -33,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Панель анализа SQL-запросов (используется при разработке).
+    'debug_toolbar',
     'homepage',
     'guides',
     'routes',
@@ -42,6 +53,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # Панель отладки ставится сразу после SecurityMiddleware.
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -64,6 +77,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # Счётчики объектов и текущая дата для всех страниц.
+                'homepage.context_processors.counters',
             ],
         },
     },

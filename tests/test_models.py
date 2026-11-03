@@ -91,12 +91,12 @@ def test_schedule_cancel_and_done(schedule):
     """Смена статуса сохраняется в базе."""
     schedule.cancel()
     schedule.refresh_from_db()
-    assert schedule.status == "отменена"
+    assert schedule.status == "cancelled"
     assert schedule.is_cancelled is True
 
     schedule.mark_done()
     schedule.refresh_from_db()
-    assert schedule.status == "проведена"
+    assert schedule.status == "completed"
 
 
 def test_models_meta_ordering():
@@ -115,6 +115,6 @@ def test_schedule_default_status(guide, excursion):
         date=date(2026, 4, 1),
         start_time=time(12, 30),
     )
-    assert schedule.status == "запланирована"
+    assert schedule.status == "active"
     assert schedule.booked == 0
     assert schedule.free_seats == 15

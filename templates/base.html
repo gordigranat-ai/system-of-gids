@@ -28,7 +28,17 @@
     </main>
 
     <footer class="container mt-4 mb-3 text-muted">
-        <p>© <span id="current-year"></span> Экскурсионное бюро</p>
+        <p class="mb-1">
+            © <span id="current-year"></span> Экскурсионное бюро
+        </p>
+        {% if site_counters %}
+            <p class="small mb-0">
+                В базе: {{ site_counters.guides }} гидов,
+                {{ site_counters.routes }} маршрутов,
+                {{ site_counters.excursions }} экскурсий,
+                {{ site_counters.schedules }} занятий
+            </p>
+        {% endif %}
     </footer>
 
     <script src="{% static 'homepage/js/main.js' %}"></script>

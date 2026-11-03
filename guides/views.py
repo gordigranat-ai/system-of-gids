@@ -9,12 +9,7 @@ from datetime import date
 from django.shortcuts import render
 
 from guides.models import Guide
-from schedules.models import (
-    STATUS_CANCELLED,
-    STATUS_DONE,
-    STATUS_PLANNED,
-    Schedule,
-)
+from schedules.models import Schedule, ScheduleStatus
 
 SORT_FIELDS = {
     "name": "name",
@@ -22,7 +17,7 @@ SORT_FIELDS = {
     "experience": "-experience_years",
 }
 
-BUSY_STATUSES = (STATUS_PLANNED, STATUS_DONE)
+BUSY_STATUSES = (ScheduleStatus.ACTIVE, ScheduleStatus.COMPLETED)
 
 
 def _language_options():
@@ -115,7 +110,7 @@ def guide_detail(request, guide_id):
         "schedules": (
             guide.schedules
             .select_related("excursion", "excursion__route")
-            .exclude(status=STATUS_CANCELLED)
+            .exclude(status=ScheduleStatus.CANCELLED)
             .order_by("date", "start_time")
         ),
     }
