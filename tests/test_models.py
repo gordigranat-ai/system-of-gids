@@ -107,6 +107,30 @@ def test_models_meta_ordering():
     assert Schedule._meta.ordering == ["date", "start_time"]
 
 
+def test_route_slug_is_generated(db):
+    """Slug собирается из русского названия транслитерацией."""
+    route = Route.objects.create(
+        name="Исторический центр",
+        duration_hours=Decimal("2.5"),
+    )
+    assert route.slug == "istoricheskiy-tsentr"
+    assert route.get_absolute_url() == f"/routes/{route.slug}/"
+
+
+def test_route_slug_is_unique(db):
+    """Одинаковые названия получают разные адреса."""
+    first = Route.objects.create(
+        name="Парковый маршрут",
+        duration_hours=Decimal("2.0"),
+    )
+    second = Route.objects.create(
+        name="Парковый маршрут",
+        duration_hours=Decimal("2.0"),
+    )
+    assert first.slug != second.slug
+    assert second.slug.endswith("-2")
+
+
 def test_schedule_default_status(guide, excursion):
     """По умолчанию занятие запланировано."""
     schedule = Schedule.objects.create(

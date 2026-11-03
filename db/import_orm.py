@@ -111,8 +111,9 @@ def import_guides(source):
 
 
 def import_routes(source):
-    Route.objects.bulk_create([
-        Route(
+    """Маршруты создаются по одному: save() сам заполняет уникальный slug."""
+    for row in source["routes"]:
+        Route.objects.create(
             id=row["id"],
             name=row["name"],
             description=row["description"] or "",
@@ -122,8 +123,6 @@ def import_routes(source):
             required_languages=row["required_languages"] or "",
             is_active=bool(row["is_active"]),
         )
-        for row in source["routes"]
-    ])
     return len(source["routes"])
 
 
