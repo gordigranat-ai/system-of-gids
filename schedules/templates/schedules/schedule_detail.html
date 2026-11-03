@@ -11,7 +11,7 @@
                 <strong>Дата:</strong> {{ schedule.date }}
             </p>
             <p class="card-text">
-                <strong>Начало:</strong> {{ schedule.start_time }}
+                <strong>Начало:</strong> {{ schedule.start_time|time:"H:i" }}
             </p>
             <p class="card-text">
                 <strong>Гид:</strong>

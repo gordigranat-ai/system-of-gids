@@ -13,7 +13,7 @@
             </p>
             <p class="card-text">
                 <strong>Языки:</strong>
-                {{ guide.languages|join:", "|default:"не указаны" }}
+                {{ guide.languages|default:"не указаны" }}
             </p>
             <p class="card-text">
                 <strong>Стаж:</strong> {{ guide.experience_years }} лет
@@ -38,7 +38,7 @@
         {% for schedule in schedules %}
             <li class="list-group-item">
                 <a href="{% url 'schedules:detail' schedule.id %}">
-                    {{ schedule.date }} в {{ schedule.start_time }}
+                    {{ schedule.date }} в {{ schedule.start_time|time:"H:i" }}
                 </a>
                 – {{ schedule.excursion.title }}
             </li>

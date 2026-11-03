@@ -5,11 +5,58 @@
 {% block content %}
     <h1>Маршруты</h1>
 
-    <p class="text-muted">Всего маршрутов: {{ routes|length }}</p>
+    <p class="text-muted">Найдено маршрутов: {{ routes|length }}</p>
+
+    <form method="get" class="row g-2 align-items-end mb-3">
+        <div class="col-auto">
+            <label for="q" class="form-label">Название</label>
+            <input
+                type="search"
+                id="q"
+                name="q"
+                value="{{ query }}"
+                class="form-control"
+            >
+        </div>
+        <div class="col-auto">
+            <label for="difficulty" class="form-label">Сложность</label>
+            <select id="difficulty" name="difficulty" class="form-select">
+                <option value="">любая</option>
+                {% for item in difficulties %}
+                    <option value="{{ item }}"
+                        {% if item == difficulty %}selected{% endif %}>
+                        {{ item }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto">
+            <label for="sort" class="form-label">Сортировка</label>
+            <select id="sort" name="sort" class="form-select">
+                <option value="name" {% if sort == "name" %}selected{% endif %}>
+                    по названию
+                </option>
+                <option value="duration"
+                    {% if sort == "duration" %}selected{% endif %}>
+                    по длительности
+                </option>
+                <option value="distance"
+                    {% if sort == "distance" %}selected{% endif %}>
+                    по протяжённости
+                </option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Показать</button>
+            <a href="{% url 'routes:list' %}" class="btn btn-outline-secondary">
+                Сбросить
+            </a>
+        </div>
+    </form>
 
     {% for route in routes %}
         {% include "routes/includes/route_card.html" %}
     {% empty %}
-        <p>Маршрутов пока нет.</p>
+        <p>По заданным условиям маршрутов нет.</p>
     {% endfor %}
 {% endblock %}

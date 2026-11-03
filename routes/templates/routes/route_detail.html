@@ -21,7 +21,7 @@
             </p>
             <p class="card-text">
                 <strong>Языки:</strong>
-                {{ route.required_languages|join:", "|default:"не указаны" }}
+                {{ route.required_languages|default:"не указаны" }}
             </p>
         </div>
     </div>

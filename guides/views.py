@@ -1,22 +1,62 @@
-"""Страницы гидов: список, поиск свободных гидов и карточка гида.
+"""Страницы гидов: список с поиском, свободные на дату, карточка.
 
-Данные берутся из базы SQLite через db.repository: там SQL-запросы
-и сборка объектов классов ПР3.
+Данные получаются через Django ORM: вместо SQL-запросов используются
+менеджеры моделей, filter(), exclude(), order_by() и связи.
 """
+
+from datetime import date
 
 from django.shortcuts import render
 
-from db.repository import (
-    get_guide,
-    list_available_guides,
-    list_guides,
-    list_schedules_by_guide,
+from guides.models import Guide
+from schedules.models import (
+    STATUS_CANCELLED,
+    STATUS_DONE,
+    STATUS_PLANNED,
+    Schedule,
 )
+
+SORT_FIELDS = {
+    "name": "name",
+    "rating": "-rating",
+    "experience": "-experience_years",
+}
+
+BUSY_STATUSES = (STATUS_PLANNED, STATUS_DONE)
+
+
+def _language_options():
+    """Список языков для фильтра: собирается из поля languages."""
+    languages = set()
+    for value in Guide.objects.values_list("languages", flat=True):
+        languages.update(
+            item.strip() for item in value.split(",") if item.strip()
+        )
+    return sorted(languages)
 
 
 def guides(request):
-    """Список гидов с языками и статусом работы."""
-    context = {"guides": list_guides()}
+    """Список гидов: поиск по имени, фильтр по языку, сортировка."""
+    queryset = Guide.objects.all()
+
+    query = request.GET.get("q", "").strip()
+    language = request.GET.get("language", "").strip()
+    sort = request.GET.get("sort", "name")
+
+    if query:
+        queryset = queryset.filter(name__icontains=query)
+    if language:
+        queryset = queryset.filter(languages__icontains=language)
+
+    queryset = queryset.order_by(SORT_FIELDS.get(sort, "name"))
+
+    context = {
+        "guides": queryset,
+        "query": query,
+        "language": language,
+        "sort": sort,
+        "languages": _language_options(),
+    }
     return render(request, "guides/guide_list.html", context)
 
 
@@ -24,22 +64,45 @@ def available_guides(request):
     """Гиды, свободные на выбранную дату.
 
     Дата приходит из формы методом GET: /guides/available/?date=2026-03-10.
-    Если дата не указана, запрос к базе не выполняется.
+    Занятыми считаются гиды, у которых на эту дату есть занятие, кроме
+    отменённых: отменённое занятие время гида не занимает.
     """
-    schedule_date = request.GET.get("date")
-    context = {"schedule_date": schedule_date, "guides": []}
+    raw_date = request.GET.get("date", "").strip()
+    context = {
+        "schedule_date": raw_date,
+        "guides": Guide.objects.none(),
+        "error": "",
+    }
 
-    if schedule_date:
-        context["guides"] = list_available_guides(schedule_date)
+    if raw_date:
+        try:
+            day = date.fromisoformat(raw_date)
+        except ValueError:
+            context["error"] = "Дата должна быть в формате ГГГГ-ММ-ДД."
+            return render(request, "guides/available.html", context)
+
+        # Занятые гиды определяются подзапросом: exclude() с двумя условиями
+        # по связи проверяет их отдельными EXISTS и даёт неверный результат,
+        # поэтому сначала выбираем сами занятия, а потом исключаем их гидов.
+        busy = Schedule.objects.filter(
+            date=day,
+            status__in=BUSY_STATUSES,
+        )
+        context["schedule_date"] = day.isoformat()
+        context["guides"] = (
+            Guide.objects.filter(is_active=True)
+            .exclude(schedules__in=busy)
+            .order_by("name")
+        )
 
     return render(request, "guides/available.html", context)
 
 
 def guide_detail(request, guide_id):
     """Карточка гида и его занятия в расписании."""
-    guide = get_guide(guide_id)
-
-    if guide is None:
+    try:
+        guide = Guide.objects.get(pk=guide_id)
+    except Guide.DoesNotExist:
         context = {
             "message": "Гид не найден",
             "hint": "Гида с таким идентификатором нет в справочнике.",
@@ -49,6 +112,11 @@ def guide_detail(request, guide_id):
 
     context = {
         "guide": guide,
-        "schedules": list_schedules_by_guide(guide_id),
+        "schedules": (
+            guide.schedules
+            .select_related("excursion", "excursion__route")
+            .exclude(status=STATUS_CANCELLED)
+            .order_by("date", "start_time")
+        ),
     }
     return render(request, "guides/guide_detail.html", context)

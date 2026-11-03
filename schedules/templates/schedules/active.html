@@ -12,7 +12,7 @@
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 <span>
                     <a href="{% url 'schedules:detail' schedule.id %}">
-                        {{ schedule.date }} в {{ schedule.start_time }}
+                        {{ schedule.date }} в {{ schedule.start_time|time:"H:i" }}
                     </a>
                     – {{ schedule.excursion.title }}
                     <small class="text-muted">гид: {{ schedule.guide.name }}</small>

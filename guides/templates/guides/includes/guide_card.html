@@ -10,7 +10,7 @@
         <small class="text-muted">{{ guide.specialization }}</small>
     </span>
 
-    <span class="text-muted">языки: {{ guide.languages|join:", " }}</span>
+    <span class="text-muted">языки: {{ guide.languages }}</span>
 
     {% if guide.is_active %}
         <span class="badge bg-success status-badge">работает</span>

@@ -22,7 +22,7 @@
 
         <p class="card-text">
             <small class="text-muted">
-                языки: {{ route.required_languages|join:", " }}
+                языки: {{ route.required_languages|default:"не указаны" }}
             </small>
         </p>
     </div>

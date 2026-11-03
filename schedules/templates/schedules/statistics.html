@@ -5,45 +5,55 @@
 {% block content %}
     <h1>Статистика</h1>
 
-    {% if summary %}
-        <div class="row row-cols-2 row-cols-md-5 g-2 mb-4">
+    {% if totals %}
+        <div class="row row-cols-2 row-cols-md-3 g-2 mb-4">
             <div class="col">
                 <div class="card text-center">
                     <div class="card-body">
-                        <div class="fs-3">{{ summary.guides }}</div>
-                        <div class="text-muted">гидов</div>
+                        <div class="fs-3">{{ totals.schedules }}</div>
+                        <div class="text-muted">занятий всего</div>
                     </div>
                 </div>
             </div>
             <div class="col">
                 <div class="card text-center">
                     <div class="card-body">
-                        <div class="fs-3">{{ summary.routes }}</div>
-                        <div class="text-muted">маршрутов</div>
+                        <div class="fs-3">{{ totals.planned }}</div>
+                        <div class="text-muted">запланировано</div>
                     </div>
                 </div>
             </div>
             <div class="col">
                 <div class="card text-center">
                     <div class="card-body">
-                        <div class="fs-3">{{ summary.excursions }}</div>
-                        <div class="text-muted">экскурсий</div>
+                        <div class="fs-3">{{ totals.done }}</div>
+                        <div class="text-muted">проведено</div>
                     </div>
                 </div>
             </div>
             <div class="col">
                 <div class="card text-center">
                     <div class="card-body">
-                        <div class="fs-3">{{ summary.schedules }}</div>
-                        <div class="text-muted">занятий</div>
+                        <div class="fs-3">{{ totals.cancelled }}</div>
+                        <div class="text-muted">отменено</div>
                     </div>
                 </div>
             </div>
             <div class="col">
                 <div class="card text-center">
                     <div class="card-body">
-                        <div class="fs-3">{{ summary.active_schedules }}</div>
-                        <div class="text-muted">без отмен</div>
+                        <div class="fs-3">{{ totals.booked_total|default:0 }}</div>
+                        <div class="text-muted">забронировано мест</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <div class="fs-3">
+                            {{ totals.revenue|default:0|floatformat:0 }} ₽
+                        </div>
+                        <div class="text-muted">выручка</div>
                     </div>
                 </div>
             </div>
@@ -61,11 +71,15 @@
             </tr>
         </thead>
         <tbody>
-            {% for item in by_guide %}
+            {% for guide in by_guide %}
                 <tr>
-                    <td>{{ item.guide_name }}</td>
-                    <td>{{ item.schedules_count }}</td>
-                    <td>{{ item.booked_total }}</td>
+                    <td>
+                        <a href="{% url 'guides:detail' guide.id %}">
+                            {{ guide.name }}
+                        </a>
+                    </td>
+                    <td>{{ guide.schedules_count }}</td>
+                    <td>{{ guide.booked_total|default:0 }}</td>
                 </tr>
             {% empty %}
                 <tr>
@@ -88,13 +102,17 @@
             </tr>
         </thead>
         <tbody>
-            {% for item in by_excursion %}
+            {% for excursion in by_excursion %}
                 <tr>
-                    <td>{{ item.title }}</td>
-                    <td>{{ item.schedules_count }}</td>
-                    <td>{{ item.booked_total }}</td>
-                    <td>{{ item.revenue|floatformat:0 }}</td>
-                    <td>{{ item.load_percent|default:"—" }}</td>
+                    <td>
+                        <a href="{% url 'excursions:detail' excursion.id %}">
+                            {{ excursion.title }}
+                        </a>
+                    </td>
+                    <td>{{ excursion.schedules_count }}</td>
+                    <td>{{ excursion.booked_total|default:0 }}</td>
+                    <td>{{ excursion.revenue|default:0|floatformat:0 }}</td>
+                    <td>{{ excursion.load_percent|default:"—" }}</td>
                 </tr>
             {% empty %}
                 <tr>
