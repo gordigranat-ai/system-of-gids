@@ -10,4 +10,5 @@ urlpatterns = [
     path("", views.guides, name="list"),
     path("available/", views.available_guides, name="available"),
     path("<int:guide_id>/", views.guide_detail, name="detail"),
+    path("<int:guide_id>/edit/", views.guide_edit, name="edit"),
 ]

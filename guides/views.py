@@ -6,8 +6,10 @@
 
 from datetime import date
 
-from django.shortcuts import render
+from django.contrib import messages
+from django.shortcuts import redirect, render
 
+from guides.forms import GuideForm
 from guides.models import Guide
 from schedules.models import Schedule, ScheduleStatus
 
@@ -115,3 +117,27 @@ def guide_detail(request, guide_id):
         ),
     }
     return render(request, "guides/guide_detail.html", context)
+
+
+def guide_edit(request, guide_id):
+    """Редактирование гида, включая загрузку фотографии."""
+    guide = Guide.objects.filter(pk=guide_id).first()
+    if guide is None:
+        context = {
+            "message": "Гид не найден",
+            "hint": "Гида с таким идентификатором нет в справочнике.",
+            "list_url": "guides:list",
+        }
+        return render(request, "not_found.html", context, status=404)
+
+    if request.method == "POST":
+        form = GuideForm(request.POST, request.FILES, instance=guide)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Данные гида сохранены.")
+            return redirect("guides:detail", guide_id=guide.pk)
+    else:
+        form = GuideForm(instance=guide)
+
+    context = {"form": form, "guide": guide}
+    return render(request, "guides/guide_form.html", context)

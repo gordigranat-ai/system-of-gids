@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Редактирование гида – экскурсионное бюро{% endblock %}
+
+{% block content %}
+    <h1>Редактирование гида</h1>
+
+    <form method="post" enctype="multipart/form-data" class="col-lg-8">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        {% if guide.photo %}
+            <div class="mb-3">
+                <p class="mb-1"><strong>Текущая фотография:</strong></p>
+                <img
+                    src="{{ guide.photo.url }}"
+                    alt="Фотография гида"
+                    class="img-fluid rounded"
+                    style="max-width: 220px;"
+                >
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+
+                {% if field.help_text %}
+                    <div class="form-text">{{ field.help_text }}</div>
+                {% endif %}
+
+                {% if field.errors %}
+                    <div class="text-danger small mt-1">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a href="{% url 'guides:detail' guide.id %}"
+           class="btn btn-outline-secondary">
+            Отмена
+        </a>
+    </form>
+{% endblock %}

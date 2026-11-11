@@ -37,6 +37,12 @@ class Guide(models.Model):
         default=True,
         verbose_name="Работает с экскурсиями",
     )
+    photo = models.ImageField(
+        upload_to="guides/",
+        blank=True,
+        verbose_name="Фотография",
+        help_text="Необязательно. JPG или PNG, не больше 2 МБ",
+    )
 
     class Meta:
         ordering = ["name"]

@@ -5,6 +5,7 @@ URL на префикс и остаток, который ищется в urls.p
 """
 
 from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
@@ -22,6 +23,13 @@ if settings.DEBUG:
     urlpatterns = [
         path("__debug__/", include("debug_toolbar.urls")),
     ] + urlpatterns
+
+# Загруженные файлы (фотографии гидов) в режиме разработки отдаёт Django.
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT,
+    )
 
 # Собственная страница 404. Обработчик читается только из этого файла,
 # поэтому действует сразу для всех приложений проекта.

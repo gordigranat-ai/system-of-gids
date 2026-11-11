@@ -1,91 +1,52 @@
 """Страницы расписания: список, активные занятия, статистика, карточка.
 
-Все данные получает Django ORM: методы менеджера Schedule.objects,
-filter(), exclude(), Q-объекты, order_by(), select_related(), annotate(),
-aggregate() и Paginator.
+Фильтр списка работает через `ScheduleFilterForm` (forms.Form), а создание
+и редактирование занятия — через `ScheduleForm` (ModelForm). Отмена
+занятия выполняется POST-запросом и меняет статус, не удаляя запись.
 """
 
-from datetime import date
-
+from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import Count, DecimalField, F, FloatField, Q, Sum
 from django.db.models.functions import Cast, Round
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from excursions.models import Excursion
 from guides.models import Guide
+from schedules.forms import ScheduleFilterForm, ScheduleForm
 from schedules.models import Schedule, ScheduleStatus
 
-SORT_FIELDS = {
-    "date": ("date", "start_time"),
-    "date_desc": ("-date", "-start_time"),
-    "booked": ("-booked", "date"),
-    "excursion": ("excursion__title", "date"),
-    "guide": ("guide__name", "date"),
-}
-
-STATUS_VALUES = [value for value, _ in ScheduleStatus.choices]
 PAGE_SIZE = 5
 
 REVENUE_FIELD = DecimalField(max_digits=12, decimal_places=2)
 
 
-def _read_filters(request):
-    """Собрать параметры фильтрации и сортировки из строки запроса."""
-    return {
-        "query": request.GET.get("q", "").strip(),
-        "status": request.GET.get("status", "").strip(),
-        "guide": request.GET.get("guide", "").strip(),
-        "date_from": request.GET.get("date_from", "").strip(),
-        "date_to": request.GET.get("date_to", "").strip(),
-        "sort": request.GET.get("sort", "date"),
+def _find_schedule(schedule_id):
+    """Найти занятие или вернуть None, если такого нет."""
+    return Schedule.objects.with_related().filter(pk=schedule_id).first()
+
+
+def _not_found(request):
+    """Страница 404 для несуществующего занятия."""
+    context = {
+        "message": "Занятие не найдено",
+        "hint": "Занятия с таким идентификатором нет в расписании.",
+        "list_url": "schedules:list",
     }
-
-
-def _apply_filters(queryset, filters):
-    """Применить фильтры и сортировку; вернуть набор и текст ошибки."""
-    error = ""
-
-    if filters["query"]:
-        queryset = queryset.filter(
-            Q(excursion__title__icontains=filters["query"])
-            | Q(guide__name__icontains=filters["query"])
-        )
-
-    if filters["status"] in STATUS_VALUES:
-        queryset = queryset.filter(status=filters["status"])
-
-    if filters["guide"]:
-        if filters["guide"].isdigit():
-            queryset = queryset.filter(guide_id=int(filters["guide"]))
-        else:
-            error = "Гида нужно выбрать из списка."
-
-    try:
-        if filters["date_from"]:
-            queryset = queryset.filter(
-                date__gte=date.fromisoformat(filters["date_from"]),
-            )
-        if filters["date_to"]:
-            queryset = queryset.filter(
-                date__lte=date.fromisoformat(filters["date_to"]),
-            )
-    except ValueError:
-        error = "Даты должны быть в формате ГГГГ-ММ-ДД."
-
-    queryset = queryset.order_by(
-        *SORT_FIELDS.get(filters["sort"], SORT_FIELDS["date"])
-    )
-    return queryset, error
+    return render(request, "not_found.html", context, status=404)
 
 
 def schedules(request):
-    """Список занятий: фильтры, сортировка и постраничный вывод."""
-    filters = _read_filters(request)
-    queryset, error = _apply_filters(
-        Schedule.objects.with_related(),
-        filters,
-    )
+    """Список занятий: фильтр из формы, сортировка и постраничный вывод."""
+    form = ScheduleFilterForm(request.GET or None)
+    queryset = Schedule.objects.with_related()
+
+    if form.is_valid():
+        queryset = form.filter_queryset(queryset)
+    else:
+        # Некорректные параметры не ломают страницу: показываем все занятия,
+        # а форма выводит сообщения об ошибках.
+        queryset = queryset.order_by("date", "start_time")
 
     paginator = Paginator(queryset, PAGE_SIZE)
     page_obj = paginator.get_page(request.GET.get("page"))
@@ -94,16 +55,64 @@ def schedules(request):
     params.pop("page", None)
 
     context = {
+        "form": form,
         "page_obj": page_obj,
         "schedules": page_obj,
-        "paginator": paginator,
         "querystring": params.urlencode(),
-        "guides": Guide.objects.order_by("name"),
-        "statuses": ScheduleStatus.choices,
-        "error": error,
-        "filters": filters,
     }
     return render(request, "schedules/schedule_list.html", context)
+
+
+def schedule_create(request):
+    """Создание занятия: GET — форма, POST — проверка и сохранение."""
+    if request.method == "POST":
+        form = ScheduleForm(request.POST)
+        if form.is_valid():
+            schedule = form.save()
+            messages.success(
+                request,
+                f"Занятие на {schedule.date} добавлено в расписание.",
+            )
+            return redirect("schedules:detail", schedule_id=schedule.pk)
+    else:
+        form = ScheduleForm()
+
+    context = {"form": form, "is_edit": False}
+    return render(request, "schedules/schedule_form.html", context)
+
+
+def schedule_edit(request, schedule_id):
+    """Редактирование существующего занятия."""
+    schedule = _find_schedule(schedule_id)
+    if schedule is None:
+        return _not_found(request)
+
+    if request.method == "POST":
+        form = ScheduleForm(request.POST, instance=schedule)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Изменения сохранены.")
+            return redirect("schedules:detail", schedule_id=schedule.pk)
+    else:
+        form = ScheduleForm(instance=schedule)
+
+    context = {"form": form, "schedule": schedule, "is_edit": True}
+    return render(request, "schedules/schedule_form.html", context)
+
+
+def schedule_cancel(request, schedule_id):
+    """Отмена занятия: подтверждение на GET, изменение статуса на POST."""
+    schedule = _find_schedule(schedule_id)
+    if schedule is None:
+        return _not_found(request)
+
+    if request.method == "POST":
+        schedule.cancel()
+        messages.success(request, "Занятие отменено.")
+        return redirect("schedules:detail", schedule_id=schedule.pk)
+
+    context = {"schedule": schedule}
+    return render(request, "schedules/schedule_cancel.html", context)
 
 
 def active_schedules(request):
@@ -181,15 +190,9 @@ def statistics(request):
 
 def schedule_detail(request, schedule_id):
     """Карточка занятия: участники, свободные места, выручка и статус."""
-    try:
-        schedule = Schedule.objects.with_related().get(pk=schedule_id)
-    except Schedule.DoesNotExist:
-        context = {
-            "message": "Занятие не найдено",
-            "hint": "Занятия с таким идентификатором нет в расписании.",
-            "list_url": "schedules:list",
-        }
-        return render(request, "not_found.html", context, status=404)
+    schedule = _find_schedule(schedule_id)
+    if schedule is None:
+        return _not_found(request)
 
     context = {"schedule": schedule}
     return render(request, "schedules/schedule_detail.html", context)

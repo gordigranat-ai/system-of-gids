@@ -26,7 +26,7 @@
                 </a>
             </p>
             <p class="card-text">
-                <strong>Маршрут:</strong> {{ schedule.route.name }}
+                <strong>Маршрут:</strong> {{ schedule.excursion.route.name }}
                 ({{ schedule.excursion.duration_hours|floatformat:1 }} ч)
             </p>
             <p class="card-text">
@@ -49,7 +49,18 @@
         </div>
     </div>
 
-    <a href="{% url 'schedules:list' %}" class="btn btn-outline-secondary">
-        ← к расписанию
-    </a>
+    <div class="mt-3">
+        <a href="{% url 'schedules:edit' schedule.id %}" class="btn btn-primary">
+            Редактировать
+        </a>
+        {% if not schedule.is_cancelled %}
+            <a href="{% url 'schedules:cancel' schedule.id %}"
+               class="btn btn-outline-danger">
+                Отменить занятие
+            </a>
+        {% endif %}
+        <a href="{% url 'schedules:list' %}" class="btn btn-outline-secondary">
+            ← к расписанию
+        </a>
+    </div>
 {% endblock %}

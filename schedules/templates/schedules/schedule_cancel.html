@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Отмена занятия – расписание{% endblock %}
+
+{% block content %}
+    <h1>Отменить занятие?</h1>
+
+    <div class="card schedule-card mb-3">
+        <div class="card-body">
+            <p class="card-text">
+                <strong>Экскурсия:</strong> {{ schedule.excursion.title }}
+            </p>
+            <p class="card-text">
+                <strong>Когда:</strong>
+                {{ schedule.date }} в {{ schedule.start_time|time:"H:i" }}
+            </p>
+            <p class="card-text">
+                <strong>Гид:</strong> {{ schedule.guide.name }}
+            </p>
+            <p class="card-text">
+                <strong>Забронировано:</strong>
+                {{ schedule.booked }} из
+                {{ schedule.excursion.max_participants }} мест
+            </p>
+            <p class="card-text mb-0">
+                Занятие останется в расписании со статусом «отменена»
+                и перестанет занимать время гида.
+            </p>
+        </div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Отменить занятие</button>
+        <a href="{% url 'schedules:detail' schedule.id %}"
+           class="btn btn-outline-secondary">
+            Оставить как есть
+        </a>
+    </form>
+{% endblock %}

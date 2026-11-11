@@ -127,3 +127,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Загруженные пользователями файлы (фотографии гидов) лежат отдельно
+# от исходников и отдаются по адресу MEDIA_URL.
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"

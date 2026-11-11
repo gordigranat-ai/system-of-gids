@@ -186,10 +186,13 @@ def test_schedules_sort_by_booked(client, many_schedules):
 
 
 def test_schedules_bad_guide(client, many_schedules):
-    """Некорректный параметр гида даёт предупреждение."""
+    """Некорректный параметр гида не ломает страницу: форма показывает ошибку."""
     response = client.get("/schedules/", {"guide": "abc"})
+    form = response.context["form"]
+
     assert response.status_code == 200
-    assert "Гида нужно выбрать" in response.content.decode()
+    assert form.is_valid() is False
+    assert form.errors
 
 
 def test_active_schedules_excludes_cancelled(client, dataset):
